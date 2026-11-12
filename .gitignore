@@ -3,27 +3,5 @@ node_modules
 node_modules/
 
 
-/temp/
-/src/temp/
-/a/b/c/temp/
-temp/
-
-dist/cache/
-
-usuarios/**/logs/
-
-uploads/*
-
-secreto.txt
-/secreto.txt
-
-!.env.example
-
-node_modules/
-dist/
-.angular/
-coverage/
 
 
-*.md
-.env
