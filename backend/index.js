@@ -3,8 +3,10 @@ const express = require('express');
 const aplicacion = express();
 const direccion = process.env.HOST || '127.0.0.1';
 const puerto = Number(process.env.PORT || 3000);
-
 aplicacion.use(express.json());
+
+
+
 
 aplicacion.use((req, res) => {
     res.status(404).json({ mensaje: 'La dirección solicitada no existe.' });
