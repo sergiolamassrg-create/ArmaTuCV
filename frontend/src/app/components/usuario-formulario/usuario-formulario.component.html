@@ -1,0 +1,7 @@
+<h1>Crear usuario</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
+<form #formulario="ngForm" (ngSubmit)="guardar(formulario)">
+<label>Nombre <input name="nombre" [(ngModel)]="datos.nombre" required></label>
+<label>Apellido <input name="apellido" [(ngModel)]="datos.apellido" required></label>
+<label>Correo <input type="email" name="email" [(ngModel)]="datos.email" required email></label>
+<label>Contraseña <input type="password" name="password" [(ngModel)]="datos.password" minlength="12" required></label>
+<button type="submit">Crear</button><a routerLink="/usuarios">Cancelar</a></form>
