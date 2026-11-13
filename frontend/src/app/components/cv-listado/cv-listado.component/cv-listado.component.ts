@@ -9,10 +9,8 @@ import { ResumenCurriculum } from '../../models/curriculum';
 })
 
 export class CvListadoComponent implements OnInit {
-
   private servicio = inject(CurriculumServicio);
-  cvs = signal<ResumenCurriculum[]>([]);
-  error = signal('');
+  cvs = signal<ResumenCurriculum[]>([]); error = signal(''); aviso = signal('');
 
   ngOnInit() {
     this.cargar();
@@ -25,4 +23,12 @@ export class CvListadoComponent implements OnInit {
     });
   }
 
+  eliminar(cv: ResumenCurriculum) {
+    if (!confirm('¿Eliminar el CV ' + cv.titulo + '?')) return;
+    this.servicio.eliminar(cv.id).subscribe({
+      next: () => { this.cvs.update(lista => lista.filter(item => item.id !== cv.id)); this.aviso.set('CV eliminado.'); },
+      error: () => this.error.set('No se pudo eliminar el CV.')
+    });
+  }
+  
 }

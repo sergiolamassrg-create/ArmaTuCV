@@ -1,12 +1,19 @@
 <h1>Mis currículums</h1>
 <a routerLink="/curriculums/nuevo">Nuevo CV</a>
-@if (error()) { 
-    <p role="alert">{{ error() }}</p> 
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+@if (aviso()) {
+  <p>{{ aviso() }}</p>
 }
 <ul>
-    @for (cv of cvs(); track cv.id) {
-     <li>
-        <a [routerLink]="['/curriculums',cv.id]">{{cv.titulo}}</a> — {{cv.nombreCompleto}}
+  @for (cv of cvs(); track cv.id) {
+    <li>
+      {{ cv.titulo }} — {{ cv.nombreCompleto }}: <a [routerLink]="['/curriculums', cv.id]">Ver</a> ·
+      <a [routerLink]="['/curriculums', cv.id, 'editar']">Editar</a>
+      <button type="button" (click)="eliminar(cv)">Eliminar</button>
     </li>
-} @empty { <li>No hay CV registrados.</li> }
+  } @empty {
+    <li>No hay CV registrados.</li>
+  }
 </ul>
