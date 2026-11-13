@@ -1,0 +1,5 @@
+<h1>Ingresar a ArmaTuCV</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
+<form #f="ngForm" (ngSubmit)="ingresar(f)">
+<label>Correo <input type="email" name="correo" [(ngModel)]="correo" email required></label>
+<label>Contraseña <input type="password" name="clave" [(ngModel)]="clave" required></label>
+<button type="submit">Ingresar</button></form>
