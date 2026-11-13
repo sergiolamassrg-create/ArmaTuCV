@@ -1,0 +1,6 @@
+<h1>Usuarios</h1>
+<p><a routerLink="/usuarios/nuevo">Crear usuario</a></p>
+@if (error()) { <p role="alert">{{ error() }}</p> }
+<ul>@for (usuario of usuarios(); track usuario.id) {
+<li>{{ usuario.nombre }} {{ usuario.apellido }} — {{ usuario.email }} — {{ usuario.rol }}</li>
+} @empty { <li>No hay usuarios.</li> }</ul>
