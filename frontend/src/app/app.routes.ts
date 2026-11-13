@@ -1,3 +1,8 @@
 import { Routes } from '@angular/router';
-
-export const routes: Routes = [];
+import { AccesoComponent } from './components/acceso/acceso.component';
+import { controlarAcceso } from './services/acceso.guard';
+export const routes: Routes = [
+  { path: 'acceso', component: AccesoComponent },
+  { path: '', redirectTo: 'acceso', pathMatch: 'full' },
+  { path: '**', redirectTo: 'acceso' }
+];
