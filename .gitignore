@@ -17,3 +17,13 @@ node_modules/
 *.vscode
 
 
+# Archivos de entorno
+.env.*
+!.env.example
+!**/.env.example
+
+# Compilaciones y temporales
+dist/
+.angular/
+coverage/
+*.log
