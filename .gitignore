@@ -1,23 +1,19 @@
-# Dependencias de npm; se vuelven a instalar, nunca se suben.
-**/node_modules/
+node_modules
+/node_modules
+node_modules/
+*node_modules
 
-# Resultados del CLI y archivos locales.
-**/.angular/
-**/dist/
-**/build/
-**/coverage/
-**/.cache/
-*.log
-.DS_Store
+.env
+/.env
+.env/
+*.env
+
+.vscode
+*.vsCode
+/.vsCode
 .vscode/
+.vsCode/
 
-# Secretos y pruebas manuales locales.
-**/.env
-**/.env.*
-!**/.env.example
-.admin-local.json
-**/.admin-local.json
-cookies.txt
-**/cookies.txt
-prueba-local.http
-**/prueba-local.http
+*.vscode
+
+
