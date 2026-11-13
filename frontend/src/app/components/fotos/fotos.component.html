@@ -1,0 +1,20 @@
+<h2>Biblioteca de fotos</h2>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+<label
+  >Subir foto JPEG o PNG
+  <input
+    type="file"
+    accept="image/jpeg,image/png"
+    (change)="subir($event)"
+    [disabled]="pendiente() || bloqueado"
+/></label>
+<ul>
+  @for (foto of fotos(); track foto.id) {
+    <li>
+      {{ foto.nombre }} — {{ foto.bytes }} bytes
+      <button type="button" [disabled]="bloqueado" (click)="elegir.emit(foto)">Elegir</button>
+    </li>
+  }
+</ul>
