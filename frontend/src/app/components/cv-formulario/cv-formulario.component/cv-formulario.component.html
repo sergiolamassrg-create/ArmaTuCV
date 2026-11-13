@@ -1,0 +1,7 @@
+<h1>Crear currículum</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
+<form #f="ngForm" (ngSubmit)="guardar(f)">
+<label>Título del CV <input name="titulo" [(ngModel)]="datos.titulo" required maxlength="150"></label>
+<label>Puesto objetivo <input name="puesto" [(ngModel)]="datos.puesto" required maxlength="180"></label>
+<label>Resumen <textarea name="resumen" [(ngModel)]="datos.resumen" maxlength="2000"></textarea></label>
+<button type="submit">Crear</button><a routerLink="/curriculums">Cancelar</a>
+</form>

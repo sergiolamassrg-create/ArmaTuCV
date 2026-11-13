@@ -1,0 +1,12 @@
+<h1>Mis currículums</h1>
+<a routerLink="/curriculums/nuevo">Nuevo CV</a>
+@if (error()) { 
+    <p role="alert">{{ error() }}</p> 
+}
+<ul>
+    @for (cv of cvs(); track cv.id) {
+     <li>
+        <a [routerLink]="['/curriculums',cv.id]">{{cv.titulo}}</a> — {{cv.nombreCompleto}}
+    </li>
+} @empty { <li>No hay CV registrados.</li> }
+</ul>
