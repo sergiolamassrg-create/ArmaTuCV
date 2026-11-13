@@ -1,3 +1,5 @@
+const servicioMigrado = require("../services/foto-servicio");
+
 // Implementación transitoria de Fase 2/3. En Fase 4 se separa el acceso SQL.
 const repositorio = {};
 const sql = require("mssql");
@@ -122,7 +124,7 @@ exports.listar = async (req, res, next) => {
   try {
     res
       .set("Cache-Control", "no-store")
-      .json(await servicio.listar(res.locals.usuario.id));
+      .json(await servicioMigrado.listar(res.locals.usuario.id));
   } catch (error) {
     next(error);
   }
@@ -130,7 +132,7 @@ exports.listar = async (req, res, next) => {
 
 exports.crear = async (req, res, next) => {
   try {
-    const foto = await servicio.crear(req.body, res.locals.usuario.id);
+    const foto = await servicioMigrado.crear(req.body, res.locals.usuario.id);
     res.status(foto.reutilizada ? 200 : 201).json(foto);
   } catch (error) {
     next(error);
