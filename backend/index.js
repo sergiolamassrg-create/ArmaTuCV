@@ -5,7 +5,9 @@ const direccion = process.env.HOST || '127.0.0.1';
 const puerto = Number(process.env.PORT || 3000);
 aplicacion.use(express.json());
 
+const rutasUsuarios = require('./routers/usuario-rutas');
 
+aplicacion.use('/api/usuarios', rutasUsuarios);
 
 
 aplicacion.use((req, res) => {
