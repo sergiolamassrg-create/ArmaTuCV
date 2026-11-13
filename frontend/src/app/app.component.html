@@ -1,0 +1,4 @@
+<header><nav><a routerLink="/">ArmaTuCV</a> · <a routerLink="/curriculums">Currículums</a> · <a routerLink="/usuarios">Usuarios</a>
+<a routerLink="/acceso">Ingresar</a><button type="button" (click)="salir()">Salir</button></nav></header>
+@if(error()){<p role="alert">{{error()}}</p>}
+<main><router-outlet /></main>
