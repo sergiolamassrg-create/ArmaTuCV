@@ -86,7 +86,7 @@ repositorio.obtener = async (id, usuarioId) => {
   return curriculum;
 };
 
-async function guardar(curriculum, usuarioId, id) {
+async function guardarEnBase(curriculum, usuarioId, id) {
   const conexion = await obtenerConexionSQL();
   const transaccion = new sql.Transaction(conexion);
   let revertida = false;
@@ -136,10 +136,10 @@ async function guardar(curriculum, usuarioId, id) {
 }
 
 repositorio.crear = async (curriculum, usuarioId) =>
-  await guardar(curriculum, usuarioId);
+  await guardarEnBase(curriculum, usuarioId);
 
 repositorio.actualizar = async (id, curriculum, usuarioId) =>
-  await guardar(curriculum, usuarioId, id);
+  await guardarEnBase(curriculum, usuarioId, id);
 
 repositorio.eliminar = async (id, usuarioId) => {
   const conexion = await obtenerConexionSQL();

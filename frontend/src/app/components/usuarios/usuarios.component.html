@@ -1,0 +1,12 @@
+<h1>Usuarios ({{ total() }})</h1><a routerLink="/usuarios/nuevo">Crear usuario</a>
+@if (error()) { <p role="alert">{{ error() }}</p> } @if (aviso()) { <p>{{ aviso() }}</p> }
+<table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>CV</th><th>Acciones</th></tr></thead><tbody>
+@for (u of usuarios(); track u.id) {
+<tr><td>{{ u.nombre }} {{ u.apellido }}</td><td>{{ u.email }}</td><td>{{ u.rol }}</td><td>{{ u.cantidadCV }}</td>
+<td><a [routerLink]="['/usuarios',u.id,'editar']">Editar</a>
+<button type="button" (click)="verCurriculums(u)">Ver CV</button>
+@if (u.activo) { <button type="button" (click)="desactivar(u)">Desactivar</button> }</td></tr>
+} @empty { <tr><td colspan="5">No hay usuarios</td></tr> }
+</tbody></table>
+@if (seleccionado(); as u) { <h2>CV de {{ u.nombre }}</h2>
+<ul>@for (cv of curriculums(); track cv.id) { <li>{{ cv.titulo }}</li> }</ul> }
