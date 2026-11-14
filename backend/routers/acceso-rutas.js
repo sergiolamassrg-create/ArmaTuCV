@@ -9,4 +9,6 @@ const limitarIntentos = rateLimit({
 enrutador.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 enrutador.get('/sesion', controlador.sesion);
 enrutador.post('/ingreso', limitarIntentos, controlador.ingreso);
+enrutador.post('/registro', limitarIntentos, controlador.registro);
+enrutador.post('/salida', controlador.salida);
 module.exports = enrutador;
