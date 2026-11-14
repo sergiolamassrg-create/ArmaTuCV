@@ -8,6 +8,9 @@ const {
   administrador,
   origenConfiable,
 } = require("./middlewares/sesion");
+const rutasCurriculums = require("./routers/curriculum-rutas");
+const rutasFotos = require("./routers/foto-rutas");
+const rutasPerfil = require("./routers/perfil-rutas");
 
 const aplicacion = express();
 const direccion = process.env.HOST || "127.0.0.1";
@@ -21,6 +24,7 @@ aplicacion.use("/api", configurar);
 // Estas rutas devuelven datos; las pantallas se declaran en Angular.
 aplicacion.use("/api/auth", rutasAcceso);
 aplicacion.use("/api/usuarios", requerir, administrador, rutasUsuarios);
+
 
 aplicacion.use((req, res) => {
   res.status(404).json({ mensaje: "La dirección solicitada no existe." });
