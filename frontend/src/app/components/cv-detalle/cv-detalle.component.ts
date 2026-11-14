@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CurriculumServicio } from '../../services/curriculum.servicio';
-import { Curriculum, DatosCurriculum } from '../../models/curriculum';
+import { CurriculumServicio } from '../services/curriculum.servicio';
+import { Curriculum, DatosCurriculum } from '../models/curriculum';
 import { FotosComponent } from '../fotos/fotos.component';
 import { Foto } from '../../models/foto';
 

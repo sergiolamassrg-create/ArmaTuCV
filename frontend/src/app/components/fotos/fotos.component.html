@@ -1,21 +1,96 @@
-<h2>Biblioteca de fotos</h2>
-@if (error()) {
-  <p role="alert">{{ error() }}</p>
-}
-<label
-  >Subir foto JPEG o PNG
-  <input
-    type="file"
-    accept="image/jpeg,image/png"
-    (change)="subir($event)"
-    [disabled]="pendiente() || bloqueado"
-/></label>
-<ul>
-  @for (foto of fotos(); track foto.id) {
-    <li>
-      {{ foto.nombre }} — {{ foto.bytes }} bytes
-      <button type="button" [disabled]="bloqueado" (click)="elegir.emit(foto)">Elegir</button>
-      <button type="button" (click)="eliminar(foto)" [disabled]="bloqueado">Eliminar</button>
-    </li>
+<section class="mt-3" aria-labelledby="titulo-fotos">
+  <h2 id="titulo-fotos" class="h6">Mis fotos: {{ fotos().length }} de 5</h2>
+  <p class="form-text">
+    Las fotos pertenecen a tu cuenta. Podés reutilizar una en varios CV; cada CV lleva solo una. Se
+    guardan una sola vez, reducidas a JPEG de 320 × 320 y hasta 90 KB.
+  </p>
+
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+      <button
+        type="button"
+        class="btn btn-link"
+        (click)="cargar()"
+        [disabled]="pendiente() || bloqueado"
+      >
+        Actualizar biblioteca
+      </button>
+    </div>
   }
-</ul>
+
+  @if (aviso()) {
+    <p role="status">{{ aviso() }}</p>
+  }
+
+  <label for="fotos" class="form-label">Cargar fotos en mi biblioteca</label>
+  <input
+    id="fotos"
+    type="file"
+    multiple
+    accept="image/jpeg,image/png"
+    class="form-control"
+    (change)="subir($event)"
+    [disabled]="pendiente() || bloqueado || fotos().length >= 5"
+    aria-describedby="ayuda-fotos"
+  />
+
+  <p id="ayuda-fotos" class="form-text">
+    JPG o PNG, hasta 5 MB y 24 megapíxeles por archivo. Recorte cuadrado centrado, sin metadatos de
+    cámara. Si llegás a cinco, eliminá una que no esté en uso.
+  </p>
+
+  @if (pendiente()) {
+    <p role="status">Procesando fotos…</p>
+  }
+
+  <div class="row g-2">
+    @for (foto of fotos(); track foto.id) {
+      <div class="col-6 col-md-4 col-lg">
+        <div
+          class="border rounded p-2 h-100 text-center"
+          [class.border-primary]="seleccion === foto.id"
+        >
+          <img [src]="foto.foto" width="80" height="80" [alt]="foto.nombre" class="rounded" />
+
+          <p class="small text-break mb-1">{{ foto.nombre }}</p>
+
+          <p class="small mb-1">{{ foto.enUso }} CV vinculados</p>
+
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm mb-1 w-100"
+            [attr.aria-pressed]="seleccion === foto.id"
+            [disabled]="pendiente() || bloqueado"
+            (click)="elegir.emit(foto)"
+          >
+            {{ seleccion === foto.id ? 'Seleccionada' : 'Usar foto' }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-sm w-100"
+            [disabled]="pendiente() || bloqueado || foto.enUso > 0"
+            (click)="eliminar(foto)"
+          >
+            Eliminar foto
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <p class="form-text">
+    Para borrar una foto vinculada, elegí otra o Sin foto en sus CV y guardá cada diseño. Después
+    actualizá la biblioteca.
+  </p>
+
+  <button
+    type="button"
+    class="btn btn-link"
+    (click)="cargar()"
+    [disabled]="pendiente() || bloqueado"
+  >
+    Actualizar biblioteca
+  </button>
+</section>
