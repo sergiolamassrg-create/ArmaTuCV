@@ -1,0 +1,10 @@
+<h1>{{ id ? 'Editar usuario' : 'Crear usuario' }}</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
+<form #formulario="ngForm" (ngSubmit)="guardar(formulario)">
+<label>Nombre <input name="nombre" [(ngModel)]="datos.nombre" required maxlength="100"></label>
+<label>Apellido <input name="apellido" [(ngModel)]="datos.apellido" required maxlength="100"></label>
+<label>Correo <input type="email" name="email" [(ngModel)]="datos.email" required email></label>
+<label>Rol <select name="rol" [(ngModel)]="datos.rol"><option value="usuario">Usuario</option><option value="administrador">Administrador</option></select></label>
+<label>Cuenta activa <input type="checkbox" name="activo" [(ngModel)]="datos.activo"></label>
+<label>Contraseña {{ id ? '(opcional)' : '(obligatoria)' }}
+<input type="password" name="password" [(ngModel)]="datos.password" [required]="!id" minlength="12"></label>
+<button type="submit">Guardar</button><a routerLink="/usuarios">Cancelar</a></form>
