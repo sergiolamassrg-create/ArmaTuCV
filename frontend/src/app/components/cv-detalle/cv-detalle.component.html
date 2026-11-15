@@ -1,0 +1,14 @@
+<a routerLink="/curriculums">Volver</a>
+
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+
+@if (cv(); as documento) {
+  <h1>{{ documento.titulo }}</h1>
+  <p>{{ documento.nombreCompleto }}</p>
+  <h2>{{ documento.puesto }}</h2>
+  <p>{{ documento.resumen }}</p>
+  <a [routerLink]="['/curriculums', documento.id, 'editar']">Editar CV</a>
+  <app-fotos [seleccion]="documento.fotoId" (elegir)="seleccionarFoto($event)" />
+}

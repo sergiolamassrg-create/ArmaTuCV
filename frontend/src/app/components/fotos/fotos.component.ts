@@ -19,12 +19,10 @@ export class FotosComponent implements OnInit {
   }
 
   cargar() {
-    this.servicio
-      .listar()
-      .subscribe({
-        next: (fotos) => this.fotos.set(fotos),
-        error: () => this.error.set('No se pudo cargar la biblioteca.'),
-      });
+    this.servicio.listar().subscribe({
+      next: (fotos) => this.fotos.set(fotos),
+      error: () => this.error.set('No se pudo cargar la biblioteca.'),
+    });
   }
 
   async subir(evento: Event) {
@@ -45,6 +43,15 @@ export class FotosComponent implements OnInit {
       this.pendiente.set(false);
       this.ocupado.emit(false);
     }
+  }
+
+  eliminar(foto: Foto) {
+    if (this.bloqueado || !confirm('¿Eliminar foto?')) return;
+
+    this.servicio.eliminar(foto.id).subscribe({
+      next: () => this.fotos.update((lista) => lista.filter((f) => f.id !== foto.id)),
+      error: () => this.error.set('No se pudo eliminar la foto; puede estar en uso.'),
+    });
   }
 
   // El procesamiento de imagen permanece en el componente durante Fase 2.

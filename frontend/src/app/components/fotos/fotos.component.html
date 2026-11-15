@@ -15,6 +15,7 @@
     <li>
       {{ foto.nombre }} — {{ foto.bytes }} bytes
       <button type="button" [disabled]="bloqueado" (click)="elegir.emit(foto)">Elegir</button>
+      <button type="button" (click)="eliminar(foto)" [disabled]="bloqueado">Eliminar</button>
     </li>
   }
 </ul>

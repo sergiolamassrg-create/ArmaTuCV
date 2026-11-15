@@ -136,3 +136,17 @@ exports.crear = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.eliminar = async (req, res, next) => {
+  try {
+    const eliminado = await servicio.eliminar(
+      req.params.id,
+      res.locals.usuario.id,
+    );
+    if (!eliminado)
+      return res.status(404).json({ mensaje: "La foto no existe." });
+    res.json({ mensaje: "Foto eliminada de tu biblioteca." });
+  } catch (error) {
+    next(error);
+  }
+};
