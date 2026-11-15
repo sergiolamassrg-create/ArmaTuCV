@@ -10,12 +10,16 @@
     (change)="subir($event)"
     [disabled]="pendiente() || bloqueado"
 /></label>
+<button type="button" (click)="elegir.emit(null)" [disabled]="bloqueado">Sin foto</button>
 <ul>
   @for (foto of fotos(); track foto.id) {
     <li>
       {{ foto.nombre }} — {{ foto.bytes }} bytes
       <button type="button" [disabled]="bloqueado" (click)="elegir.emit(foto)">Elegir</button>
-      <button type="button" (click)="eliminar(foto)" [disabled]="bloqueado">Eliminar</button>
+      <button type="button" [disabled]="bloqueado || pendiente() || foto.enUso > 0" (click)="eliminar(foto)">Eliminar</button>
+      <button type="button" [disabled]="bloqueado" (click)="eliminar(foto)">Eliminar</button>
     </li>
+  } @empty {
+    <li>No hay fotografías cargadas.</li>
   }
 </ul>

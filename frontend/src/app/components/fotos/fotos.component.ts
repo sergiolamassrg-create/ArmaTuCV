@@ -1,10 +1,10 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FotoServicio } from '../../services/foto.servicio';
 import { Foto } from '../../models/foto';
 
 @Component({ selector: 'app-fotos', templateUrl: './fotos.component.html' })
-export class FotosComponent implements OnInit {
+export class FotosComponent {
   private servicio = inject(FotoServicio);
   @Input() seleccion: number | null = null;
   @Input() bloqueado = false;
@@ -19,10 +19,12 @@ export class FotosComponent implements OnInit {
   }
 
   cargar() {
-    this.servicio.listar().subscribe({
-      next: (fotos) => this.fotos.set(fotos),
-      error: () => this.error.set('No se pudo cargar la biblioteca.'),
-    });
+    this.servicio
+      .listar()
+      .subscribe({
+        next: (fotos) => this.fotos.set(fotos),
+        error: () => this.error.set('No se pudo cargar la biblioteca.'),
+      });
   }
 
   async subir(evento: Event) {
@@ -46,15 +48,23 @@ export class FotosComponent implements OnInit {
   }
 
   eliminar(foto: Foto) {
-    if (this.bloqueado || !confirm('¿Eliminar foto?')) return;
-
+    if (this.pendiente() || foto.enUso > 0) return;
+    if (!confirm('¿Eliminar la foto ' + foto.nombre + '?')) return;
+    this.error.set('');
+    this.pendiente.set(true);
     this.servicio.eliminar(foto.id).subscribe({
-      next: () => this.fotos.update((lista) => lista.filter((f) => f.id !== foto.id)),
-      error: () => this.error.set('No se pudo eliminar la foto; puede estar en uso.'),
+      next: () => {
+        this.fotos.update(lista => lista.filter(item => item.id !== foto.id));
+        if (this.seleccion === foto.id) this.elegir.emit(null);
+        this.pendiente.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudo eliminar la foto. Si está en uso, primero desasociala del CV.');
+        this.pendiente.set(false);
+      }
     });
   }
 
-  // El procesamiento de imagen permanece en el componente durante Fase 2.
   async prepararFoto(archivo: File): Promise<string> {
     if (!['image/jpeg', 'image/png'].includes(archivo.type) || archivo.size > 5 * 1024 * 1024)
       throw new Error('Elegí un JPG o PNG de hasta 5 MB.');
