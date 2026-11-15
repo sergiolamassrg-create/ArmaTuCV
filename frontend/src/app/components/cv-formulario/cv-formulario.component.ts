@@ -4,9 +4,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CurriculumServicio } from '../../services/curriculum.servicio';
 import { DatosCurriculum, Curriculum, nuevoCV } from '../../models/curriculum';
 
-@Component({ 
+@Component({
 imports: [FormsModule, RouterLink],
-templateUrl: './cv-formulario.component.html' 
+templateUrl: './cv-formulario.component.html'
 })
 
 export class CvFormularioComponent implements OnInit {
@@ -14,11 +14,11 @@ export class CvFormularioComponent implements OnInit {
   private ruta = inject(ActivatedRoute); private navegador = inject(Router);
   id = this.ruta.snapshot.paramMap.get('id');
   datos: DatosCurriculum = nuevoCV(); error = signal('');
-  
+
   ngOnInit() {
-    if (this.id) this.cargar(); 
+    if (this.id) this.cargar();
   }
-  
+
   cargar() {
     if (!this.id) return;
     this.servicio.obtener(this.id).subscribe({

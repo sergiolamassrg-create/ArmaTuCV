@@ -30,5 +30,5 @@ export class CvListadoComponent implements OnInit {
       error: () => this.error.set('No se pudo eliminar el CV.')
     });
   }
-  
+
 }

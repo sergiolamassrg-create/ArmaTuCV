@@ -1,5 +1,34 @@
-<h1>Ingresar a ArmaTuCV</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
-<form #f="ngForm" (ngSubmit)="ingresar(f)">
-<label>Correo <input type="email" name="correo" [(ngModel)]="correo" email required></label>
-<label>Contraseña <input type="password" name="clave" [(ngModel)]="clave" required></label>
-<button type="submit">Ingresar</button></form>
+<section class="distribucion-acceso" aria-labelledby="titulo-acceso">
+  <div class="presentacion-acceso">
+    <p class="subtitulo">TU EXPERIENCIA TIENE SU LUGAR</p>
+    <h1>Tu próximo paso,<br><span class="texto-degradado">con tu mejor CV.</span></h1>
+    <p>Guardá tu recorrido y prepará un currículum que puedas compartir.</p>
+    <p class="small">El administrador puede gestionar tu cuenta y consultar los títulos, fechas y cantidad de tus CV. El contenido completo de cada CV está disponible en tu cuenta.</p>
+  </div>
+  <div class="panel-formulario panel-acceso">
+    <img class="icono-acceso" src="imagenes/cv512.png" width="64" height="64" alt="ArmaTuCV">
+    <h2 id="titulo-acceso" class="h4 mb-3">{{ registro ? 'Creá tu cuenta' : 'Ingresá a tu cuenta' }}</h2>
+    @if (acceso.aviso()) { <div class="alert alert-info" role="status">{{ acceso.aviso() }}</div> }
+    @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
+    <form #formulario="ngForm" (ngSubmit)="enviar(formulario)" novalidate>
+      <fieldset [disabled]="pendiente()">
+        @if (registro) {
+          <div class="mb-3"><label for="nombre" class="form-label">Nombre</label><input id="nombre" name="nombre" class="form-control" [(ngModel)]="nombre" required maxlength="150" autocomplete="given-name"></div>
+          <div class="mb-3"><label for="apellido" class="form-label">Apellido</label><input id="apellido" name="apellido" class="form-control" [(ngModel)]="apellido" required maxlength="100" autocomplete="family-name"></div>
+        }
+        <div class="mb-3"><label for="correo" class="form-label">Correo electrónico</label><input id="correo" name="email" class="form-control" type="email" email [(ngModel)]="correo" required maxlength="254" autocomplete="username"></div>
+        <div class="mb-3"><label for="clave" class="form-label">Contraseña</label><input id="clave" name="password" class="form-control" type="password" [(ngModel)]="clave" required [minlength]="registro ? 12 : 1" maxlength="128" [attr.autocomplete]="registro ? 'new-password' : 'current-password'"></div>
+        @if (registro) {
+          <div class="mb-3"><label for="repetir" class="form-label">Repetir contraseña</label><input id="repetir" name="repetir" class="form-control" type="password" [(ngModel)]="repetirClave" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+          <p class="small text-secondary">Usá una frase de entre 12 y 128 caracteres que puedas recordar.</p>
+        }
+        <button class="btn btn-primary w-100" type="submit">{{ pendiente() ? 'Procesando…' : (registro ? 'Crear cuenta' : 'Ingresar') }}</button>
+      </fieldset>
+    </form>
+    <div class="mt-4">
+      @if (registro) { <a routerLink="/acceso">Ya tengo una cuenta</a> }
+      @else { <a routerLink="/registro">Crear una cuenta</a> }
+    </div>
+    <p class="small text-secondary mt-3">Si olvidaste tu contraseña, contactá al administrador. Esta versión no envía códigos por correo.</p>
+  </div>
+</section>
