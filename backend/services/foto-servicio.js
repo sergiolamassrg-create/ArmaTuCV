@@ -1,5 +1,4 @@
-// Implementación transitoria de Fase 2/3. En Fase 4 se separa el acceso SQL.
-const repositorio = {};
+const baseDatos = {};
 const sql = require("mssql");
 const { obtenerConexionSQL } = require("../database/conexion");
 const consultas = require("../database/consultas");
@@ -16,7 +15,7 @@ function presentar(foto) {
   };
 }
 
-repositorio.listar = async (usuarioId) => {
+baseDatos.listar = async (usuarioId) => {
   const conexion = await obtenerConexionSQL();
   const resultado = await conexion
     .request()
@@ -25,7 +24,7 @@ repositorio.listar = async (usuarioId) => {
   return resultado.recordset.map(presentar);
 };
 
-repositorio.crear = async (nombre, contenido, usuarioId) => {
+baseDatos.crear = async (nombre, contenido, usuarioId) => {
   const conexion = await obtenerConexionSQL();
   const resultado = await conexion
     .request()
@@ -36,7 +35,7 @@ repositorio.crear = async (nombre, contenido, usuarioId) => {
   return presentar(resultado.recordset[0]);
 };
 
-repositorio.eliminar = async (id, usuarioId) => {
+baseDatos.eliminar = async (id, usuarioId) => {
   const conexion = await obtenerConexionSQL();
   const resultado = await conexion
     .request()
@@ -54,7 +53,7 @@ function errorDeFoto(mensaje, status = 400) {
   return error;
 }
 
-servicio.listar = async (usuarioId) => await repositorio.listar(usuarioId);
+servicio.listar = async (usuarioId) => await baseDatos.listar(usuarioId);
 
 servicio.crear = async (datos, usuarioId) => {
   if (
@@ -84,8 +83,9 @@ servicio.crear = async (datos, usuarioId) => {
   ) {
     throw errorDeFoto("El contenido de la foto no es válido.");
   }
+
   try {
-    return await repositorio.crear(datos.nombre.trim(), contenido, usuarioId);
+    return await baseDatos.crear(datos.nombre.trim(), contenido, usuarioId);
   } catch (error) {
     if (error.number === 51001) {
       throw errorDeFoto(
@@ -103,20 +103,19 @@ servicio.eliminar = async (id, usuarioId) => {
     !Number.isInteger(identificador) ||
     identificador < 1 ||
     identificador > 2147483647
-  ) {
+  )
     throw errorDeFoto("El identificador de la foto no es válido.");
-  }
   try {
-    return await repositorio.eliminar(identificador, usuarioId);
+    return await baseDatos.eliminar(identificador, usuarioId);
   } catch (error) {
-    if (error.number === 547) {
+    if (error.number === 547)
       throw errorDeFoto(
         "La foto está vinculada a un CV. Cambiá su foto o elegí Sin foto y guardá el diseño antes de eliminarla.",
         409,
       );
-    }
     throw error;
   }
 };
 
- module.exports = servicio;
+
+module.exports = servicio;

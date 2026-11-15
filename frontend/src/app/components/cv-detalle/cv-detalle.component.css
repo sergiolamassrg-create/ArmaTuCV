@@ -1,0 +1,11 @@
+.documento-cv { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.4; }
+.foto-cv { max-width: 34mm; max-height: 34mm; float: right; }
+.documento-cv h1 { margin-bottom: 0; }
+.documento-cv h2 { margin-top: 0.2em; }
+.documento-cv section { break-inside: avoid; }
+@page { size: A4; margin: 12mm; }
+@media print {
+  .acciones-cv { display: none !important; }
+  .documento-cv { font-size: 11pt; max-width: none; }
+  .documento-cv h1, .documento-cv h2, .documento-cv h3 { break-after: avoid; }
+}
