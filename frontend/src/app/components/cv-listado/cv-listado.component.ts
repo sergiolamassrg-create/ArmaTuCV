@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CurriculumServicio } from '../../services/curriculum.servicio';
 import { ResumenCurriculum } from '../../models/curriculum';
@@ -8,7 +8,7 @@ import { ResumenCurriculum } from '../../models/curriculum';
   templateUrl: './cv-listado.component.html'
 })
 
-export class CvListadoComponent implements OnInit {
+export class CvListadoComponent {
   private servicio = inject(CurriculumServicio);
   cvs = signal<ResumenCurriculum[]>([]); error = signal(''); aviso = signal('');
 
