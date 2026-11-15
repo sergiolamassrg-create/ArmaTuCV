@@ -1,47 +1,113 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CurriculumServicio } from '../../services/curriculum.servicio';
-import { DatosCurriculum, Curriculum, nuevoCV } from '../../models/curriculum';
+import {
+  Curriculum, DatosCurriculum, Experiencia, Educacion, Habilidad, Idioma,
+  Complemento, nuevoCV
+} from '../../models/curriculum';
 
 @Component({
-imports: [FormsModule, RouterLink],
-templateUrl: './cv-formulario.component.html'
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './cv-formulario.component.html'
 })
-
-export class CvFormularioComponent implements OnInit {
+export class CvFormularioComponent {
   private servicio = inject(CurriculumServicio);
-  private ruta = inject(ActivatedRoute); private navegador = inject(Router);
+  private ruta = inject(ActivatedRoute);
+  private navegador = inject(Router);
+  private constructorFormulario = inject(FormBuilder);
   id = this.ruta.snapshot.paramMap.get('id');
-  datos: DatosCurriculum = nuevoCV(); error = signal('');
+  error = signal('');
+  cargando = signal(false);
+  guardando = signal(false);
+  datos: DatosCurriculum = nuevoCV();
 
-  ngOnInit() {
-    if (this.id) this.cargar();
-  }
+  formulario = this.constructorFormulario.nonNullable.group({
+    titulo: ['', [Validators.required, Validators.maxLength(150)]],
+    puesto: ['', [Validators.required, Validators.maxLength(180)]],
+    resumen: ['', Validators.maxLength(2000)]
+  });
 
-  cargar() {
+  ngOnInit(): void {
     if (!this.id) return;
+    this.cargando.set(true);
     this.servicio.obtener(this.id).subscribe({
-      next: cv => this.adaptar(cv),
-      error: error => this.error.set(this.servicio.mensaje(error))
+      next: cv => { this.cargarDatos(cv); this.cargando.set(false); },
+      error: error => { this.error.set(this.servicio.mensaje(error)); this.cargando.set(false); }
     });
   }
 
-  adaptar(cv: Curriculum) {
+  cargarDatos(cv: Curriculum): void {
+    this.formulario.patchValue({ titulo: cv.titulo, puesto: cv.puesto, resumen: cv.resumen });
     this.datos = {
       titulo: cv.titulo, puesto: cv.puesto, resumen: cv.resumen,
-      experiencias: cv.experiencias, educaciones: cv.educaciones, habilidades: cv.habilidades,
-      idiomas: cv.idiomas, complementos: cv.complementos, fotoId: cv.fotoId,
+      experiencias: [...cv.experiencias], educaciones: [...cv.educaciones],
+      habilidades: [...cv.habilidades], idiomas: [...cv.idiomas],
+      complementos: [...cv.complementos], fotoId: cv.fotoId,
       plantilla: cv.plantilla, tamanoLetra: cv.tamanoLetra, mostrarIconos: cv.mostrarIconos
     };
   }
 
-  guardar(formulario: NgForm) {
-    if (formulario.invalid) return;
-    const accion = this.id ? this.servicio.actualizar(this.id, this.datos) : this.servicio.crear(this.datos);
-    accion.subscribe({
-      next: cv => this.navegador.navigate(['/curriculums', cv.id]),
-      error: error => this.error.set(this.servicio.mensaje(error))
+  agregarExperiencia(): void {
+    if (this.datos.experiencias.length >= 20) return;
+    this.datos.experiencias.push({ puesto: '', empresa: '', fechaInicio: null, fechaFin: null, descripcion: '' });
+  }
+  agregarEducacion(): void {
+    if (this.datos.educaciones.length >= 20) return;
+    this.datos.educaciones.push({ titulo: '', institucion: '', anioInicio: null, anioFin: null, estado: '' });
+  }
+  agregarHabilidad(): void {
+    if (this.datos.habilidades.length >= 20) return;
+    this.datos.habilidades.push({ nombre: '', tipo: 'TECNICA' });
+  }
+  agregarIdioma(): void {
+    if (this.datos.idiomas.length >= 20) return;
+    this.datos.idiomas.push({ idioma: '', nivel: '' });
+  }
+  agregarComplemento(): void {
+    if (this.datos.complementos.length >= 20) return;
+    this.datos.complementos.push({ tipo: 'CURSO', titulo: '', descripcion: '', anio: null });
+  }
+  cambiarTipoHabilidad(habilidad: Habilidad, tipo: string): void {
+    habilidad.tipo = tipo === 'BLANDA' ? 'BLANDA' : 'TECNICA';
+  }
+  cambiarTipoComplemento(complemento: Complemento, tipo: string): void {
+    complemento.tipo = tipo === 'PROYECTO' ? 'PROYECTO' : tipo === 'CERTIFICACION' ? 'CERTIFICACION' : 'CURSO';
+  }
+
+  guardar(): void {
+    this.formulario.markAllAsTouched();
+    if (this.cargando() || this.guardando() || this.formulario.invalid) {
+      this.error.set('Completá el título y el puesto objetivo.');
+      return;
+    }
+    const campos = this.formulario.getRawValue();
+    const datos: DatosCurriculum = {
+      ...this.datos,
+      titulo: campos.titulo.trim(),
+      puesto: campos.puesto.trim(),
+      resumen: campos.resumen.trim()
+    };
+    if (!datos.titulo || !datos.puesto) {
+      this.error.set('Completá el título y el puesto objetivo.');
+      return;
+    }
+    this.error.set('');
+    this.guardando.set(true);
+    const peticion = this.id ? this.servicio.actualizar(this.id, datos) : this.servicio.crear(datos);
+    peticion.subscribe({
+      next: cv => {
+        this.guardando.set(false);
+        if (!this.id) {
+          this.formulario.reset({ titulo: '', puesto: '', resumen: '' });
+          this.datos = nuevoCV();
+        }
+        this.navegador.navigate(['/curriculums', cv.id]);
+      },
+      error: error => {
+        this.error.set(this.servicio.mensaje(error));
+        this.guardando.set(false);
+      }
     });
   }
 }
