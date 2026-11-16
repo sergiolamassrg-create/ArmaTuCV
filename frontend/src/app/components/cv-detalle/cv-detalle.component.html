@@ -1,13 +1,13 @@
-<div class="acciones-cv">
+<div class="acciones-cv d-flex flex-wrap gap-2 mb-3">
   <a routerLink="/curriculums">Volver a mis currículums</a>
   @if (cv(); as documento) {
     <a [routerLink]="['/curriculums', documento.id, 'editar']">Editar CV</a>
-    <button type="button" (click)="imprimir()">Imprimir / Guardar como PDF A4</button>
+    <button type="button" class="btn btn-primary" (click)="imprimir()">Imprimir / Guardar como PDF A4</button>
   }
 </div>
 @if (error()) { <p role="alert">{{ error() }}</p> }
 @if (cv(); as documento) {
-  <article class="documento-cv" [style.font-size.pt]="documento.tamanoLetra">
+  <article class="documento-cv border rounded shadow-sm" [style.font-size.pt]="documento.tamanoLetra">
     <h1>{{ documento.nombreCompleto }}</h1>
     <h2>{{ documento.puesto }}</h2>
     <p>{{ documento.titulo }}</p>
@@ -58,6 +58,6 @@
     <h2>Fotografía del currículum</h2>
     <p>Para usar la nueva foto en el PDF, primero guardá la selección.</p>
     <app-fotos [seleccion]="documento.fotoId" (elegir)="seleccionarFoto($event)" />
-    <button type="button" (click)="seleccionarFoto(null)" [disabled]="!documento.fotoId">Sin foto</button>
+    <button class="btn btn-outline-secondary" type="button" (click)="seleccionarFoto(null)" [disabled]="!documento.fotoId">Sin foto</button>
   </section>
 }
