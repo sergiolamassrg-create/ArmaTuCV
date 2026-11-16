@@ -1,20 +1,14 @@
-<section>
-  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <h1 class="mb-0">Mis currículums</h1>
-    <a class="btn btn-primary" routerLink="/curriculums/nuevo">Nuevo CV</a>
-  </div>
-  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
-  @if (aviso()) { <div class="alert alert-success" role="status">{{ aviso() }}</div> }
-  <ul class="list-group">
-    @for (cv of cvs(); track cv.id) {
-      <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div><strong>{{ cv.titulo }}</strong> — {{ cv.nombreCompleto }}</div>
-        <div class="d-flex flex-wrap gap-2">
-          <a class="btn btn-sm btn-outline-primary" [routerLink]="['/curriculums', cv.id]">Ver</a>
-          <a class="btn btn-sm btn-outline-secondary" [routerLink]="['/curriculums', cv.id, 'editar']">Editar</a>
-          <button class="btn btn-sm btn-outline-danger" type="button" (click)="eliminar(cv)">Eliminar</button>
-        </div>
-      </li>
-    } @empty { <li class="list-group-item">No hay currículums registrados.</li> }
-  </ul>
-</section>
+<h1>Mis currículums</h1>
+<a routerLink="/curriculums/nuevo">Crear CV</a>
+@if (error()) { <p role="alert">{{ error() }}</p> }
+@if (aviso()) { <p role="status">{{ aviso() }}</p> }
+<ul>
+  @for (cv of cvs(); track cv.id) {
+    <li>
+      {{ cv.titulo }} — {{ cv.nombreCompleto }}
+      <a [routerLink]="['/curriculums', cv.id]">Ver</a>
+      <a [routerLink]="['/curriculums', cv.id, 'editar']">Editar</a>
+      <button type="button" (click)="eliminar(cv)">Eliminar</button>
+    </li>
+  } @empty { <li>Todavía no tenés currículums.</li> }
+</ul>
