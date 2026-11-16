@@ -9,7 +9,7 @@ export const revisarSesion: HttpInterceptorFn = (solicitud, siguiente) => {
     const navegador = inject(Router);
     return siguiente(solicitud).pipe(
         catchError(error => {
-            if ((solicitud.url.startsWith('/api/curriculums') || solicitud.url.startsWith('/api/usuarios') || solicitud.url.startsWith('/api/fotos')) && error instanceof HttpErrorResponse && error.status === 401) {
+            if ((solicitud.url.startsWith('/api/curriculums') || solicitud.url.startsWith('/api/usuarios') || solicitud.url.startsWith('/api/fotos') || solicitud.url.startsWith('/api/perfil')) && error instanceof HttpErrorResponse && error.status === 401) {
                 servicio.olvidar();
                 servicio.aviso.set('La sesión venció. Volvé a ingresar.');
                 navegador.navigate(['/acceso']);

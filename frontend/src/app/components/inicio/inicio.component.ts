@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccesoServicio } from '../../services/acceso.servicio';
 
@@ -6,7 +6,7 @@ import { AccesoServicio } from '../../services/acceso.servicio';
   imports: [RouterLink],
   templateUrl: './inicio.component.html'
 })
-export class InicioComponent implements OnInit {
+export class InicioComponent {
   acceso = inject(AccesoServicio);
   ngOnInit() {
     // La portada permanece pública aunque el servicio de sesión no esté disponible.

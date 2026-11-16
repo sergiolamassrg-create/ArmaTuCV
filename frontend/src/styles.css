@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+body { background: #f8f9fa; }
+.pagina-completa { min-height: 100vh; display: flex; flex-direction: column; }
+.contenido-principal { flex: 1; }
+.formulario-simple { max-width: 650px; }
+.formulario-cv { max-width: 920px; }
+.formulario-cv > fieldset > label { display: block; margin-bottom: 0.8rem; }
+.formulario-cv textarea { min-height: 80px; }
+.pie-pagina { background: #e9ecef; color: #343a40; }
+@media print {
+  body { background: white !important; }
+  .no-imprimir, .acciones-cv { display: none !important; }
+  .contenido-principal { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  .pagina-completa { display: block; min-height: auto; }
+}
