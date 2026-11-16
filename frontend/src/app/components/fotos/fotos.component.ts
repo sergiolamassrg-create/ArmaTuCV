@@ -7,6 +7,7 @@ import { Foto } from '../../models/foto';
 export class FotosComponent {
   private servicio = inject(FotoServicio);
   @Input() seleccion: number | null = null;
+  @Input() permitirElegir = true;
   @Input() bloqueado = false;
   @Output() elegir = new EventEmitter<Foto | null>();
   @Output() ocupado = new EventEmitter<boolean>();
