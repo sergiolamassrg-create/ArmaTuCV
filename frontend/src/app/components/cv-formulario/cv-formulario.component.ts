@@ -11,6 +11,7 @@ import {
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './cv-formulario.component.html'
 })
+
 export class CvFormularioComponent {
   private servicio = inject(CurriculumServicio);
   private ruta = inject(ActivatedRoute);
@@ -51,21 +52,27 @@ export class CvFormularioComponent {
   agregarExperiencia(): void {
     this.datos.experiencias.push({ puesto: '', empresa: '', fechaInicio: null, fechaFin: null, descripcion: '' });
   }
+
   agregarEducacion(): void {
     this.datos.educaciones.push({ titulo: '', institucion: '', anioInicio: null, anioFin: null, estado: '' });
   }
+
   agregarHabilidad(): void {
     this.datos.habilidades.push({ nombre: '', tipo: 'TECNICA' });
   }
+
   agregarIdioma(): void {
     this.datos.idiomas.push({ idioma: '', nivel: '' });
   }
+
   agregarComplemento(): void {
     this.datos.complementos.push({ tipo: 'CURSO', titulo: '', descripcion: '', anio: null });
   }
+
   cambiarTipoHabilidad(habilidad: Habilidad, tipo: string): void {
     habilidad.tipo = tipo === 'BLANDA' ? 'BLANDA' : 'TECNICA';
   }
+
   cambiarTipoComplemento(complemento: Complemento, tipo: string): void {
     complemento.tipo = tipo === 'PROYECTO' ? 'PROYECTO' : tipo === 'CERTIFICACION' ? 'CERTIFICACION' : 'CURSO';
   }
@@ -105,4 +112,5 @@ export class CvFormularioComponent {
       }
     });
   }
+
 }

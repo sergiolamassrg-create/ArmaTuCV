@@ -8,6 +8,7 @@ import { PiePaginaComponent } from './components/pie-pagina/pie-pagina.component
   imports: [RouterLink, RouterOutlet, PiePaginaComponent],
   templateUrl: './app.component.html'
 })
+
 export class AppComponent {
   acceso = inject(AccesoServicio);
   private router = inject(Router);
@@ -25,4 +26,5 @@ export class AppComponent {
       error: error => this.error.set(this.acceso.mensaje(error))
     });
   }
+
 }

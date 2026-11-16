@@ -42,7 +42,9 @@ baseDatos.actualizar = async (datos, usuarioId) => {
 };
 
 const servicio = {};
+
 servicio.obtener = async (usuarioId) => await baseDatos.obtener(usuarioId);
+
 servicio.actualizar = async (datos, usuarioId) => {
   const limites = {
     nombre: 100,

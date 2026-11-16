@@ -41,6 +41,3 @@ exports.curriculums = async (req, res, next) => {
         next(error);
     }
 };
-
-exports.operaciones = servicio;
-exports.consultarCuenta = servicio.consultarCuenta;

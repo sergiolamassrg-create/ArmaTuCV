@@ -8,6 +8,7 @@ import { DatosUsuario } from '../../models/usuario';
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './usuario-formulario.component.html'
 })
+
 export class UsuarioFormularioComponent {
   private servicio = inject(UsuarioServicio);
   private ruta = inject(ActivatedRoute);
@@ -98,4 +99,5 @@ export class UsuarioFormularioComponent {
       }
     });
   }
+
 }

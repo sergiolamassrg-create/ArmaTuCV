@@ -3,7 +3,11 @@ import { firstValueFrom } from 'rxjs';
 import { FotoServicio } from '../../services/foto.servicio';
 import { Foto } from '../../models/foto';
 
-@Component({ selector: 'app-fotos', templateUrl: './fotos.component.html' })
+@Component({
+  selector: 'app-fotos',
+  templateUrl: './fotos.component.html'
+})
+
 export class FotosComponent {
   private servicio = inject(FotoServicio);
   @Input() seleccion: number | null = null;
@@ -99,4 +103,5 @@ export class FotosComponent {
       imagen.close();
     }
   }
+
 }

@@ -3,7 +3,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { AccesoServicio } from './acceso.servicio';
 
-// El backend vuelve a comprobar la sesión y los permisos en cada petición.
 export const controlarAcceso: CanActivateFn = (ruta, estado) => {
     const servicio = inject(AccesoServicio);
     const navegador = inject(Router);
@@ -22,4 +21,5 @@ export const controlarAcceso: CanActivateFn = (ruta, estado) => {
             return of(ingreso);
         })
     );
+
 };

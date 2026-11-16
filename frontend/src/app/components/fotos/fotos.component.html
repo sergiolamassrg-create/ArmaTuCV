@@ -1,25 +1,23 @@
 <h2 class="h4">Biblioteca de fotos</h2>
 @if (error()) {
-  <p class="alert alert-danger" role="alert">{{ error() }}</p>
+<p class="alert alert-danger" role="alert">{{ error() }}</p>
 }
-<label
-  >Subir foto JPEG o PNG
-  <input class="form-control mb-2"
-    type="file"
-    accept="image/jpeg,image/png"
-    (change)="subir($event)"
-    [disabled]="pendiente() || bloqueado"
-/></label>
-@if (permitirElegir) { <button class="btn btn-outline-secondary btn-sm ms-2" type="button" (click)="elegir.emit(null)" [disabled]="bloqueado">Sin foto</button> }
+<label>Subir foto JPEG o PNG
+  <input class="form-control mb-2" type="file" accept="image/jpeg,image/png" (change)="subir($event)"
+    [disabled]="pendiente() || bloqueado" /></label>
+@if (permitirElegir) { <button class="btn btn-outline-secondary btn-sm ms-2" type="button" (click)="elegir.emit(null)"
+  [disabled]="bloqueado">Sin foto</button> }
 <ul class="list-group mb-3">
   @for (foto of fotos(); track foto.id) {
-    <li class="list-group-item">
-      {{ foto.nombre }} — {{ foto.bytes }} bytes
-      @if (permitirElegir) { <button class="btn btn-outline-primary btn-sm ms-2" type="button" [disabled]="bloqueado" (click)="elegir.emit(foto)">Elegir</button> }
-      <button class="btn btn-outline-danger btn-sm ms-2" type="button" [disabled]="bloqueado || pendiente() || foto.enUso > 0" (click)="eliminar(foto)">Eliminar</button>
-      @if (foto.enUso > 0) { <small class="text-secondary ms-2">En uso: no se puede borrar</small> }
-      </li>
+  <li class="list-group-item">
+    {{ foto.nombre }} — {{ foto.bytes }} bytes
+    @if (permitirElegir) { <button class="btn btn-outline-primary btn-sm ms-2" type="button" [disabled]="bloqueado"
+      (click)="elegir.emit(foto)">Elegir</button> }
+    <button class="btn btn-outline-danger btn-sm ms-2" type="button"
+      [disabled]="bloqueado || pendiente() || foto.enUso > 0" (click)="eliminar(foto)">Eliminar</button>
+    @if (foto.enUso > 0) { <small class="text-secondary ms-2">En uso: no se puede borrar</small> }
+  </li>
   } @empty {
-    <li class="list-group-item">No hay fotografías cargadas.</li>
+  <li class="list-group-item">No hay fotografías cargadas.</li>
   }
 </ul>

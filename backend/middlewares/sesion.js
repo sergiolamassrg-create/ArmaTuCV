@@ -6,12 +6,13 @@ if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
     "Configurá SESSION_SECRET con al menos 32 caracteres en .env.",
   );
 }
-// MemoryStore es suficiente para la demostración local; no se permite usarlo en producción.
+
 if (process.env.NODE_ENV === "production") {
   throw new Error(
     "Antes de publicar, configurar un almacén persistente de sesiones y HTTPS.",
   );
 }
+
 const opcionesCookie = {
   httpOnly: true,
   sameSite: "lax",

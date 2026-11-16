@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './acceso.component.html'
 })
+
 export class AccesoComponent {
   acceso = inject(AccesoServicio);
   private ruta = inject(ActivatedRoute);
@@ -16,7 +17,6 @@ export class AccesoComponent {
   registro = this.ruta.snapshot.data['registro'] === true;
   error = signal('');
   pendiente = signal(false);
-
   formulario = this.fb.nonNullable.group({
     nombre: [''],
     apellido: [''],
@@ -71,4 +71,5 @@ export class AccesoComponent {
       }
     });
   }
+
 }

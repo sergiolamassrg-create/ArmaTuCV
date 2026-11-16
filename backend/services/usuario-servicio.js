@@ -7,10 +7,12 @@ baseDatos.listar = async () => {
     const conexion = await obtenerConexionSQL();
     return (await conexion.request().query(consultas.listarUsuarios)).recordset;
 };
+
 baseDatos.obtener = async (id) => {
     const conexion = await obtenerConexionSQL();
     return (await conexion.request().input('id', sql.Int, id).query(consultas.obtenerUsuario)).recordset[0];
 };
+
 baseDatos.obtenerPorCorreo = async (correo) => {
     const conexion = await obtenerConexionSQL();
     return (await conexion.request().input('email', sql.NVarChar(150), correo).query(consultas.usuarioPorCorreo)).recordset[0];
@@ -44,24 +46,31 @@ async function guardar(usuario, id) {
         throw error;
     }
 }
+
 baseDatos.crear = async (usuario) => await guardar(usuario);
+
 baseDatos.actualizar = async (id, usuario) => await guardar(usuario, id);
+
 baseDatos.desactivar = async (id) => {
     const conexion = await obtenerConexionSQL();
     return (await conexion.request().input('id', sql.Int, id).query(consultas.desactivarUsuario)).rowsAffected[0];
 };
+
 baseDatos.curriculums = async (id) => {
     const conexion = await obtenerConexionSQL();
     return (await conexion.request().input('id', sql.Int, id).query(consultas.curriculumsDeUsuario)).recordset;
 };
 
 const servicio = {};
+
 const argon2 = require('argon2');
+
 function errorDeUsuario(estado, mensaje) {
     const error = new Error(mensaje);
     error.status = estado;
     return error;
 }
+
 function validarId(id) {
     const numero = Number(id);
     if (!Number.isInteger(numero) || numero < 1 || numero > 2147483647) {
@@ -69,6 +78,7 @@ function validarId(id) {
     }
     return numero;
 }
+
 function validarCorreo(email) {
     if (typeof email !== 'string' || email.length > 150) {
         throw errorDeUsuario(400, 'Revisá el correo electrónico.');
@@ -80,15 +90,18 @@ function validarCorreo(email) {
     }
     return correo;
 }
+
 function validarClave(clave) {
     if (typeof clave !== 'string' || clave.length < 12 || clave.length > 128 || clave.trim() === '') {
         throw errorDeUsuario(400, 'La contraseña debe tener entre 12 y 128 caracteres.');
     }
     return clave;
 }
+
 function datosPublicos(usuario) {
     return { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, rol: usuario.rol, activo: usuario.activo };
 }
+
 function prepararDatos(datos, registro) {
     if (!datos || typeof datos !== 'object' || Array.isArray(datos)) throw errorDeUsuario(400, 'Datos inválidos.');
     const permitidos = registro ? ['nombre', 'apellido', 'email', 'password'] : ['nombre', 'apellido', 'email', 'password', 'rol', 'activo'];
@@ -109,10 +122,12 @@ function prepararDatos(datos, registro) {
     }
     return usuario;
 }
+
 function comprobarDuplicado(error) {
     if (error.number === 2601 || error.number === 2627) throw errorDeUsuario(409, 'Ya existe una cuenta con ese correo.');
     throw error;
 }
+
 async function guardarUsuarioNuevo(datos, registroPublico) {
     const usuario = prepararDatos(datos, registroPublico);
     usuario.claveHash = await argon2.hash(validarClave(datos.password), { type: argon2.argon2id });
@@ -122,9 +137,11 @@ async function guardarUsuarioNuevo(datos, registroPublico) {
         comprobarDuplicado(error);
     }
 }
-// El registro público fija el rol usuario; el alta administrativa permite elegirlo.
+
 servicio.registrar = async (datos) => await guardarUsuarioNuevo(datos, true);
+
 servicio.crear = async (datos) => await guardarUsuarioNuevo(datos, false);
+
 servicio.ingresar = async (datos) => {
     const correo = validarCorreo(datos && datos.email);
     const clave = datos && datos.password;
@@ -140,12 +157,15 @@ servicio.ingresar = async (datos) => {
     }
     return usuario;
 };
+
 servicio.listar = async () => await baseDatos.listar();
+
 servicio.obtener = async (id) => {
     const usuario = await baseDatos.obtener(validarId(id));
     if (!usuario) throw errorDeUsuario(404, 'El usuario no existe.');
     return datosPublicos(usuario);
 };
+
 servicio.actualizar = async (id, datos, administradorId) => {
     const identificador = validarId(id);
     const usuario = prepararDatos(datos, false);
@@ -162,21 +182,25 @@ servicio.actualizar = async (id, datos, administradorId) => {
         return datosPublicos(resultado);
     } catch (error) { comprobarDuplicado(error); }
 };
+
 servicio.desactivar = async (id, administradorId) => {
     const identificador = validarId(id);
     if (identificador === administradorId) throw errorDeUsuario(400, 'No podés desactivar tu propia cuenta.');
     if (!await baseDatos.desactivar(identificador)) throw errorDeUsuario(404, 'El usuario no existe.');
 };
+
 servicio.curriculums = async (id) => {
     const identificador = validarId(id);
     await servicio.obtener(identificador);
     return await baseDatos.curriculums(identificador);
 };
+
 servicio.datosPublicos = datosPublicos;
+
 servicio.validarClave = validarClave;
+
 servicio.validarCorreo = validarCorreo;
 
-
-
 servicio.consultarCuenta = baseDatos.obtener;
+
 module.exports = servicio;

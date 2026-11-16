@@ -5,4 +5,5 @@ import { FotosComponent } from '../fotos/fotos.component';
   imports: [FotosComponent],
   templateUrl: './biblioteca-fotos.component.html'
 })
-export class BibliotecaFotosComponent {}
+
+export class BibliotecaFotosComponent { }

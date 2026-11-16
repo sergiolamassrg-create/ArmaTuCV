@@ -8,19 +8,31 @@
   <form [formGroup]="formulario" (ngSubmit)="guardar()">
     <fieldset [disabled]="cargando() || guardando()">
       <div class="mb-3"><label class="form-label" for="perfil-nombre">Nombre</label>
-        <input class="form-control" id="perfil-nombre" formControlName="nombre" maxlength="100" autocomplete="given-name"></div>
+        <input class="form-control" id="perfil-nombre" formControlName="nombre" maxlength="100"
+          autocomplete="given-name">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-apellido">Apellido</label>
-        <input class="form-control" id="perfil-apellido" formControlName="apellido" maxlength="100" autocomplete="family-name"></div>
+        <input class="form-control" id="perfil-apellido" formControlName="apellido" maxlength="100"
+          autocomplete="family-name">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-telefono">Teléfono</label>
-        <input class="form-control" id="perfil-telefono" formControlName="telefono" maxlength="40" autocomplete="tel"></div>
+        <input class="form-control" id="perfil-telefono" formControlName="telefono" maxlength="40" autocomplete="tel">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-ubicacion">Ubicación</label>
-        <input class="form-control" id="perfil-ubicacion" formControlName="ubicacion" maxlength="200"></div>
+        <input class="form-control" id="perfil-ubicacion" formControlName="ubicacion" maxlength="200">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-linkedin">LinkedIn (URL completa)</label>
-        <input class="form-control" id="perfil-linkedin" formControlName="linkedin" maxlength="250" placeholder="https://..."></div>
+        <input class="form-control" id="perfil-linkedin" formControlName="linkedin" maxlength="250"
+          placeholder="https://...">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-github">GitHub (URL completa)</label>
-        <input class="form-control" id="perfil-github" formControlName="github" maxlength="250" placeholder="https://..."></div>
+        <input class="form-control" id="perfil-github" formControlName="github" maxlength="250"
+          placeholder="https://...">
+      </div>
       <div class="mb-3"><label class="form-label" for="perfil-portfolio">Portfolio (URL completa)</label>
-        <input class="form-control" id="perfil-portfolio" formControlName="portfolio" maxlength="250" placeholder="https://..."></div>
+        <input class="form-control" id="perfil-portfolio" formControlName="portfolio" maxlength="250"
+          placeholder="https://...">
+      </div>
       <button class="btn btn-primary" type="submit" [disabled]="cargando() || guardando()">
         {{ guardando() ? 'Guardando...' : 'Guardar perfil' }}
       </button>

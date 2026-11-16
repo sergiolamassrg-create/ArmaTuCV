@@ -5,4 +5,5 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './contacto.component.html'
 })
-export class ContactoComponent {}
+
+export class ContactoComponent { }
