@@ -7,11 +7,11 @@ export interface Experiencia {
 }
 
 export interface Educacion {
-    titulo: string;
-    institucion: string;
-    anioInicio: number | null;
-    anioFin: number | null;
-    estado: string;
+  titulo: string;
+  institucion: string;
+  anioInicio: number | null;
+  anioFin: number | null;
+  estado: string;
 }
 
 export interface Habilidad {
@@ -50,6 +50,12 @@ export interface Curriculum extends DatosCurriculum {
   id: number;
   nombreCompleto: string;
   foto: string;
+  email?: string;
+  telefono?: string;
+  ubicacion?: string;
+  linkedin?: string;
+  github?: string;
+  portfolio?: string;
 }
 
 export interface ResumenCurriculum {

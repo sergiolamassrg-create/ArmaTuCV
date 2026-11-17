@@ -3,6 +3,8 @@ const sql = require('mssql');
 const argon2 = require('argon2');
 const { obtenerConexionSQL } = require('./conexion');
 const { validarClave, validarCorreo } = require('../controllers/usuario-controlador').operaciones;
+
+
 (async () => {
     try {
         let entrada = '';

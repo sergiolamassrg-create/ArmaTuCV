@@ -1,4 +1,4 @@
-const usuarios = require("./usuario-controlador").operaciones;
+const usuarios = require("../services/usuario-servicio");
 const sesion = require("../middlewares/sesion");
 
 exports.ingreso = async (req, res, next) => {

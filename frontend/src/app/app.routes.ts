@@ -18,7 +18,8 @@ import { controlarAcceso } from './services/acceso.guard';
   imports: [RouterLink],
   template: `<section><h1>Página no encontrada</h1><p>Esta dirección no está disponible.</p><a routerLink="/" class="btn btn-primary">Volver al inicio</a></section>`
 })
-class NoEncontradoComponent {}
+
+class NoEncontradoComponent { }
 
 export const routes: Routes = [
   { path: '', component: InicioComponent, pathMatch: 'full', title: 'ArmaTuCV' },
@@ -36,5 +37,5 @@ export const routes: Routes = [
   { path: 'sobre-nosotros', component: SobreNosotrosComponent, title: 'Sobre nosotros — ArmaTuCV' },
   { path: 'contacto', component: ContactoComponent, title: 'Contacto — ArmaTuCV' },
   { path: 'aviso-academico', component: AvisoAcademicoComponent, title: 'Aviso académico — ArmaTuCV' },
-  { path: '**', component: NoEncontradoComponent, title: 'Página no encontrada — ArmaTuCV' }
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

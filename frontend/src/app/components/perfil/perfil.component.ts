@@ -7,6 +7,7 @@ import { AccesoServicio } from '../../services/acceso.servicio';
   imports: [ReactiveFormsModule],
   templateUrl: './perfil.component.html'
 })
+
 export class PerfilComponent {
   private fb = inject(FormBuilder);
   private servicio = inject(PerfilServicio);
@@ -27,7 +28,9 @@ export class PerfilComponent {
     portfolio: ['', Validators.maxLength(250)]
   });
 
-  ngOnInit(): void { this.cargar(); }
+  ngOnInit(): void {
+    this.cargar();
+  }
 
   cargar(): void {
     this.cargando.set(true);
@@ -71,4 +74,5 @@ export class PerfilComponent {
       }
     });
   }
+
 }

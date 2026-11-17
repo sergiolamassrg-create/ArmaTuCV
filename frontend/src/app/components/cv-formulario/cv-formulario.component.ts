@@ -11,6 +11,7 @@ import {
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './cv-formulario.component.html'
 })
+
 export class CvFormularioComponent {
   private servicio = inject(CurriculumServicio);
   private ruta = inject(ActivatedRoute);
@@ -49,28 +50,29 @@ export class CvFormularioComponent {
   }
 
   agregarExperiencia(): void {
-    if (this.datos.experiencias.length >= 20) return;
     this.datos.experiencias.push({ puesto: '', empresa: '', fechaInicio: null, fechaFin: null, descripcion: '' });
   }
+
   agregarEducacion(): void {
-    if (this.datos.educaciones.length >= 20) return;
     this.datos.educaciones.push({ titulo: '', institucion: '', anioInicio: null, anioFin: null, estado: '' });
   }
+
   agregarHabilidad(): void {
-    if (this.datos.habilidades.length >= 20) return;
     this.datos.habilidades.push({ nombre: '', tipo: 'TECNICA' });
   }
+
   agregarIdioma(): void {
-    if (this.datos.idiomas.length >= 20) return;
     this.datos.idiomas.push({ idioma: '', nivel: '' });
   }
+
   agregarComplemento(): void {
-    if (this.datos.complementos.length >= 20) return;
     this.datos.complementos.push({ tipo: 'CURSO', titulo: '', descripcion: '', anio: null });
   }
+
   cambiarTipoHabilidad(habilidad: Habilidad, tipo: string): void {
     habilidad.tipo = tipo === 'BLANDA' ? 'BLANDA' : 'TECNICA';
   }
+
   cambiarTipoComplemento(complemento: Complemento, tipo: string): void {
     complemento.tipo = tipo === 'PROYECTO' ? 'PROYECTO' : tipo === 'CERTIFICACION' ? 'CERTIFICACION' : 'CURSO';
   }
@@ -110,4 +112,5 @@ export class CvFormularioComponent {
       }
     });
   }
+
 }

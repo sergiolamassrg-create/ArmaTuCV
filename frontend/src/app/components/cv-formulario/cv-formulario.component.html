@@ -1,87 +1,198 @@
-<h1 class="mb-3">{{ id ? 'Editar currículum' : 'Crear currículum' }}</h1>
-@if (error()) { <p class="alert alert-danger" role="alert">{{ error() }}</p> }
-@if (cargando()) { <p>Cargando currículum...</p> }
+<h1>{{ id ? 'Editar currículum' : 'Crear currículum' }}</h1>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+@if (cargando()) {
+  <p>Cargando currículum...</p>
+}
 <form class="formulario-cv" [formGroup]="formulario" (ngSubmit)="guardar()">
   <fieldset [disabled]="cargando() || guardando()">
-    <label class="d-block mb-2">Título del CV <input class="form-control" formControlName="titulo" maxlength="150"></label>
-    @if (formulario.controls.titulo.touched && formulario.controls.titulo.invalid) { <p>Ingresá un título.</p> }
-    <label class="d-block mb-2">Puesto objetivo <input class="form-control" formControlName="puesto" maxlength="180"></label>
-    @if (formulario.controls.puesto.touched && formulario.controls.puesto.invalid) { <p>Ingresá un puesto objetivo.</p> }
-    <label class="d-block mb-2">Resumen <textarea class="form-control" formControlName="resumen" maxlength="2000"></textarea></label>
+    <label>Título del CV <input formControlName="titulo" maxlength="150" /></label>
+    @if (formulario.controls.titulo.touched && formulario.controls.titulo.invalid) {
+      <p>Ingresá un título.</p>
+    }
+    <label>Puesto objetivo <input formControlName="puesto" maxlength="180" /></label>
+    @if (formulario.controls.puesto.touched && formulario.controls.puesto.invalid) {
+      <p>Ingresá un puesto objetivo.</p>
+    }
+    <label>Resumen <textarea formControlName="resumen" maxlength="2000"></textarea></label>
 
-    <h2 class="h4 mt-4">Experiencia laboral</h2>
+    <h2>Experiencia laboral</h2>
     @for (experiencia of datos.experiencias; track $index; let i = $index) {
-      <fieldset class="border rounded p-3 mb-3">
+      <fieldset>
         <legend>Experiencia {{ i + 1 }}</legend>
-        <label class="d-block mb-2">Puesto <input class="form-control" #puesto [value]="experiencia.puesto" (input)="experiencia.puesto = puesto.value"></label>
-        <label class="d-block mb-2">Empresa <input class="form-control" #empresa [value]="experiencia.empresa" (input)="experiencia.empresa = empresa.value"></label>
-        <label class="d-block mb-2">Fecha inicio <input class="form-control" #inicio type="date" [value]="experiencia.fechaInicio || ''" (change)="experiencia.fechaInicio = inicio.value || null"></label>
-        <label class="d-block mb-2">Fecha fin <input class="form-control" #fin type="date" [value]="experiencia.fechaFin || ''" (change)="experiencia.fechaFin = fin.value || null"></label>
-        <label class="d-block mb-2">Descripción <textarea class="form-control" #descripcion [value]="experiencia.descripcion" (input)="experiencia.descripcion = descripcion.value"></textarea></label>
-        <button class="btn btn-outline-danger btn-sm mt-2 me-2" type="button" (click)="datos.experiencias.splice(i, 1)">Quitar experiencia</button>
+        <label
+          >Puesto
+          <input #puesto [value]="experiencia.puesto" (input)="experiencia.puesto = puesto.value"
+        /></label>
+        <label
+          >Empresa
+          <input
+            #empresa
+            [value]="experiencia.empresa"
+            (input)="experiencia.empresa = empresa.value"
+        /></label>
+        <label
+          >Fecha inicio
+          <input
+            #inicio
+            type="date"
+            [value]="experiencia.fechaInicio || ''"
+            (change)="experiencia.fechaInicio = inicio.value || null"
+        /></label>
+        <label
+          >Fecha fin
+          <input
+            #fin
+            type="date"
+            [value]="experiencia.fechaFin || ''"
+            (change)="experiencia.fechaFin = fin.value || null"
+        /></label>
+        <label
+          >Descripción
+          <textarea
+            #descripcion
+            [value]="experiencia.descripcion"
+            (input)="experiencia.descripcion = descripcion.value"
+          ></textarea>
+        </label>
+        <button type="button" (click)="datos.experiencias.splice(i, 1)">Quitar experiencia</button>
       </fieldset>
-    } @empty { <p>Sin experiencias cargadas.</p> }
-    <button class="btn btn-outline-secondary btn-sm mt-2 me-2" type="button" (click)="agregarExperiencia()">Agregar experiencia</button>
+    } @empty {
+      <p>Sin experiencias cargadas.</p>
+    }
+    <button type="button" (click)="agregarExperiencia()">Agregar experiencia</button>
 
-    <h2 class="h4 mt-4">Educación</h2>
+    <h2>Educación</h2>
     @for (educacion of datos.educaciones; track $index; let i = $index) {
-      <fieldset class="border rounded p-3 mb-3">
+      <fieldset>
         <legend>Estudio {{ i + 1 }}</legend>
-        <label class="d-block mb-2">Título <input class="form-control" #titulo [value]="educacion.titulo" (input)="educacion.titulo = titulo.value"></label>
-        <label class="d-block mb-2">Institución <input class="form-control" #institucion [value]="educacion.institucion" (input)="educacion.institucion = institucion.value"></label>
-        <label class="d-block mb-2">Año inicio <input class="form-control" #inicio type="number" [value]="educacion.anioInicio ?? ''" (input)="educacion.anioInicio = inicio.value ? +inicio.value : null"></label>
-        <label class="d-block mb-2">Año fin <input class="form-control" #fin type="number" [value]="educacion.anioFin ?? ''" (input)="educacion.anioFin = fin.value ? +fin.value : null"></label>
-        <label class="d-block mb-2">Estado <input class="form-control" #estado [value]="educacion.estado" (input)="educacion.estado = estado.value"></label>
-        <button class="btn btn-outline-danger btn-sm mt-2 me-2" type="button" (click)="datos.educaciones.splice(i, 1)">Quitar estudio</button>
+        <label
+          >Título
+          <input #titulo [value]="educacion.titulo" (input)="educacion.titulo = titulo.value"
+        /></label>
+        <label
+          >Institución
+          <input
+            #institucion
+            [value]="educacion.institucion"
+            (input)="educacion.institucion = institucion.value"
+        /></label>
+        <label
+          >Año inicio
+          <input
+            #inicio
+            type="number"
+            [value]="educacion.anioInicio ?? ''"
+            (input)="educacion.anioInicio = inicio.value ? +inicio.value : null"
+        /></label>
+        <label
+          >Año fin
+          <input
+            #fin
+            type="number"
+            [value]="educacion.anioFin ?? ''"
+            (input)="educacion.anioFin = fin.value ? +fin.value : null"
+        /></label>
+        <label
+          >Estado
+          <input #estado [value]="educacion.estado" (input)="educacion.estado = estado.value"
+        /></label>
+        <button type="button" (click)="datos.educaciones.splice(i, 1)">Quitar estudio</button>
       </fieldset>
-    } @empty { <p>Sin estudios cargados.</p> }
-    <button class="btn btn-outline-secondary btn-sm mt-2 me-2" type="button" (click)="agregarEducacion()">Agregar estudio</button>
+    } @empty {
+      <p>Sin estudios cargados.</p>
+    }
+    <button type="button" (click)="agregarEducacion()">Agregar estudio</button>
 
-    <h2 class="h4 mt-4">Habilidades</h2>
+    <h2>Habilidades</h2>
     @for (habilidad of datos.habilidades; track $index; let i = $index) {
       <div>
-        <label class="d-block mb-2">Nombre <input class="form-control" #nombre [value]="habilidad.nombre" (input)="habilidad.nombre = nombre.value"></label>
-        <label class="d-block mb-2">Tipo
-          <select class="form-select" #tipo [value]="habilidad.tipo" (change)="cambiarTipoHabilidad(habilidad, tipo.value)">
-            <option value="TECNICA">Técnica</option><option value="BLANDA">Blanda</option>
+        <label
+          >Nombre
+          <input #nombre [value]="habilidad.nombre" (input)="habilidad.nombre = nombre.value"
+        /></label>
+        <label
+          >Tipo
+          <select
+            #tipo
+            [value]="habilidad.tipo"
+            (change)="cambiarTipoHabilidad(habilidad, tipo.value)"
+          >
+            <option value="TECNICA">Técnica</option>
+            <option value="BLANDA">Blanda</option>
           </select>
         </label>
-        <button class="btn btn-outline-danger btn-sm mt-2 me-2" type="button" (click)="datos.habilidades.splice(i, 1)">Quitar</button>
+        <button type="button" (click)="datos.habilidades.splice(i, 1)">Quitar</button>
       </div>
-    } @empty { <p>Sin habilidades cargadas.</p> }
-    <button class="btn btn-outline-secondary btn-sm mt-2 me-2" type="button" (click)="agregarHabilidad()">Agregar habilidad</button>
+    } @empty {
+      <p>Sin habilidades cargadas.</p>
+    }
+    <button type="button" (click)="agregarHabilidad()">Agregar habilidad</button>
 
-    <h2 class="h4 mt-4">Idiomas</h2>
+    <h2>Idiomas</h2>
     @for (idioma of datos.idiomas; track $index; let i = $index) {
       <div>
-        <label class="d-block mb-2">Idioma <input class="form-control" #nombre [value]="idioma.idioma" (input)="idioma.idioma = nombre.value"></label>
-        <label class="d-block mb-2">Nivel <input class="form-control" #nivel [value]="idioma.nivel" (input)="idioma.nivel = nivel.value"></label>
-        <button class="btn btn-outline-danger btn-sm mt-2 me-2" type="button" (click)="datos.idiomas.splice(i, 1)">Quitar</button>
+        <label
+          >Idioma <input #nombre [value]="idioma.idioma" (input)="idioma.idioma = nombre.value"
+        /></label>
+        <label
+          >Nivel <input #nivel [value]="idioma.nivel" (input)="idioma.nivel = nivel.value"
+        /></label>
+        <button type="button" (click)="datos.idiomas.splice(i, 1)">Quitar</button>
       </div>
-    } @empty { <p>Sin idiomas cargados.</p> }
-    <button class="btn btn-outline-secondary btn-sm mt-2 me-2" type="button" (click)="agregarIdioma()">Agregar idioma</button>
+    } @empty {
+      <p>Sin idiomas cargados.</p>
+    }
+    <button type="button" (click)="agregarIdioma()">Agregar idioma</button>
 
-    <h2 class="h4 mt-4">Complementos</h2>
+    <h2>Complementos</h2>
     @for (complemento of datos.complementos; track $index; let i = $index) {
-      <fieldset class="border rounded p-3 mb-3">
+      <fieldset>
         <legend>Complemento {{ i + 1 }}</legend>
-        <label class="d-block mb-2">Tipo
-          <select class="form-select" #tipo [value]="complemento.tipo" (change)="cambiarTipoComplemento(complemento, tipo.value)">
+        <label
+          >Tipo
+          <select
+            #tipo
+            [value]="complemento.tipo"
+            (change)="cambiarTipoComplemento(complemento, tipo.value)"
+          >
             <option value="CURSO">Curso</option>
             <option value="CERTIFICACION">Certificación</option>
             <option value="PROYECTO">Proyecto</option>
           </select>
         </label>
-        <label class="d-block mb-2">Título <input class="form-control" #titulo [value]="complemento.titulo" (input)="complemento.titulo = titulo.value"></label>
-        <label class="d-block mb-2">Descripción <textarea class="form-control" #descripcion [value]="complemento.descripcion" (input)="complemento.descripcion = descripcion.value"></textarea></label>
-        <label class="d-block mb-2">Año <input class="form-control" #anio type="number" [value]="complemento.anio ?? ''" (input)="complemento.anio = anio.value ? +anio.value : null"></label>
-        <button class="btn btn-outline-danger btn-sm mt-2 me-2" type="button" (click)="datos.complementos.splice(i, 1)">Quitar</button>
+        <label
+          >Título
+          <input #titulo [value]="complemento.titulo" (input)="complemento.titulo = titulo.value"
+        /></label>
+        <label
+          >Descripción
+          <textarea
+            #descripcion
+            [value]="complemento.descripcion"
+            (input)="complemento.descripcion = descripcion.value"
+          ></textarea>
+        </label>
+        <label
+          >Año
+          <input
+            #anio
+            type="number"
+            [value]="complemento.anio ?? ''"
+            (input)="complemento.anio = anio.value ? +anio.value : null"
+        /></label>
+        <button type="button" (click)="datos.complementos.splice(i, 1)">Quitar</button>
       </fieldset>
-    } @empty { <p>Sin complementos cargados.</p> }
-    <button class="btn btn-outline-secondary btn-sm mt-2 me-2" type="button" (click)="agregarComplemento()">Agregar complemento</button>
+    } @empty {
+      <p>Sin complementos cargados.</p>
+    }
+    <button type="button" (click)="agregarComplemento()">Agregar complemento</button>
 
     <p>La foto y las opciones del PDF se administran en el detalle del CV.</p>
-    <button class="btn btn-primary mt-3 me-2" type="submit" [disabled]="guardando() || cargando()">{{ guardando() ? 'Guardando...' : 'Guardar CV' }}</button>
-    <a class="btn btn-outline-secondary mt-3" routerLink="/curriculums">Cancelar</a>
+    <button type="submit" [disabled]="guardando() || cargando()">
+      {{ guardando() ? 'Guardando...' : 'Guardar CV' }}
+    </button>
+    <a routerLink="/curriculums">Cancelar</a>
   </fieldset>
 </form>

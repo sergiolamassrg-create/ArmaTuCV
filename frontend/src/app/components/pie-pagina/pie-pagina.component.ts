@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './pie-pagina.component.html'
 })
+
 export class PiePaginaComponent {
   anio = new Date().getFullYear();
 }

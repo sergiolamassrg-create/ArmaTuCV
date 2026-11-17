@@ -4,16 +4,16 @@
       <a class="text-white fw-bold text-decoration-none" routerLink="/">ArmaTuCV</a>
       <a class="text-white" routerLink="/">Inicio</a>
       @if (acceso.usuario(); as usuario) {
-        <a class="text-white" routerLink="/curriculums">Mis CV</a>
-        <a class="text-white" routerLink="/fotos">Fotografías</a>
-        <a class="text-white" routerLink="/perfil">Mi perfil</a>
-        @if (usuario.rol === 'administrador') {
-          <a class="text-white" routerLink="/usuarios">Usuarios</a>
-        }
-        <button class="btn btn-sm btn-outline-light ms-auto" type="button" (click)="salir()">Salir</button>
+      <a class="text-white" routerLink="/curriculums">Mis CV</a>
+      <a class="text-white" routerLink="/fotos">Fotografías</a>
+      <a class="text-white" routerLink="/perfil">Mi perfil</a>
+      @if (usuario.rol === 'administrador') {
+      <a class="text-white" routerLink="/usuarios">Usuarios</a>
+      }
+      <button class="btn btn-sm btn-outline-light ms-auto" type="button" (click)="salir()">Salir</button>
       } @else if (acceso.usuario() === null) {
-        <a class="text-white" routerLink="/acceso">Ingresar</a>
-        <a class="text-white" routerLink="/registro">Crear cuenta</a>
+      <a class="text-white" routerLink="/acceso">Ingresar</a>
+      <a class="text-white" routerLink="/registro">Crear cuenta</a>
       }
       <a class="text-white" routerLink="/sobre-nosotros">Sobre nosotros</a>
       <a class="text-white" routerLink="/contacto">Contacto</a>

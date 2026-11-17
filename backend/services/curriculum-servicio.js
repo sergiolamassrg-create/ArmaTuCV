@@ -3,7 +3,7 @@ const sql = require("mssql");
 const { obtenerConexionSQL } = require("../database/conexion");
 const consultas = require("../database/consultas");
 
-// Solo metadatos definidos por el programa; nunca nombres SQL recibidos del usuario.
+
 const secciones = [
   {
     campo: "experiencias",
@@ -326,11 +326,15 @@ async function guardar(datos, usuarioId, id) {
 }
 
 servicio.listar = async (usuarioId) => await baseDatos.listar(usuarioId);
+
 servicio.obtener = async (id, usuarioId) =>
   await baseDatos.obtener(validarId(id), usuarioId);
+
 servicio.crear = async (datos, usuarioId) => await guardar(datos, usuarioId);
+
 servicio.actualizar = async (id, datos, usuarioId) =>
   await guardar(datos, usuarioId, validarId(id));
+
 servicio.eliminar = async (id, usuarioId) =>
   await baseDatos.eliminar(validarId(id), usuarioId);
 

@@ -3,6 +3,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const argon2 = require('argon2');
 const dotenv = require('dotenv');
+
 (async () => {
     const archivo = path.join(__dirname, '..', '.env');
     let contenido = fs.readFileSync(archivo, 'utf8');
@@ -18,4 +19,7 @@ const dotenv = require('dotenv');
     }
     fs.writeFileSync(archivo, contenido.trimEnd() + '\n');
     console.log('Configuración de acceso preparada. No se muestran secretos.');
-})().catch(() => { console.error('No se pudo preparar .env. Copiá primero .env.example y completá SQL.'); process.exitCode = 1; });
+})()
+.catch(() => {
+    console.error('No se pudo preparar .env. Copiá primero .env.example y completá SQL.'); process.exitCode = 1;
+});
