@@ -1,7 +1,4 @@
-const baseDatos = {};
-const sql = require("mssql");
-const { obtenerConexionSQL } = require("../database/conexion");
-const consultas = require("../database/consultas");
+const repositorio = require("../repositories/foto-repositorio");
 
 function presentar(foto) {
   return {
@@ -15,36 +12,6 @@ function presentar(foto) {
   };
 }
 
-baseDatos.listar = async (usuarioId) => {
-  const conexion = await obtenerConexionSQL();
-  const resultado = await conexion
-    .request()
-    .input("usuarioId", sql.Int, usuarioId)
-    .query(consultas.listarFotos);
-  return resultado.recordset.map(presentar);
-};
-
-baseDatos.crear = async (nombre, contenido, usuarioId) => {
-  const conexion = await obtenerConexionSQL();
-  const resultado = await conexion
-    .request()
-    .input("usuarioId", sql.Int, usuarioId)
-    .input("nombre", sql.NVarChar(100), nombre)
-    .input("contenido", sql.VarBinary(sql.MAX), contenido)
-    .query(consultas.crearFoto);
-  return presentar(resultado.recordset[0]);
-};
-
-baseDatos.eliminar = async (id, usuarioId) => {
-  const conexion = await obtenerConexionSQL();
-  const resultado = await conexion
-    .request()
-    .input("id", sql.Int, id)
-    .input("usuarioId", sql.Int, usuarioId)
-    .query(consultas.eliminarFoto);
-  return resultado.rowsAffected[0];
-};
-
 const servicio = {};
 
 function errorDeFoto(mensaje, status = 400) {
@@ -53,7 +20,8 @@ function errorDeFoto(mensaje, status = 400) {
   return error;
 }
 
-servicio.listar = async (usuarioId) => await baseDatos.listar(usuarioId);
+servicio.listar = async (usuarioId) =>
+  (await repositorio.listar(usuarioId)).map(presentar);
 
 servicio.crear = async (datos, usuarioId) => {
   if (
@@ -85,7 +53,8 @@ servicio.crear = async (datos, usuarioId) => {
   }
 
   try {
-    return await baseDatos.crear(datos.nombre.trim(), contenido, usuarioId);
+    const fotoGuardada = await repositorio.crear(datos.nombre.trim(), contenido, usuarioId);
+    return presentar(fotoGuardada);
   } catch (error) {
     if (error.number === 51001) {
       throw errorDeFoto(
@@ -106,7 +75,7 @@ servicio.eliminar = async (id, usuarioId) => {
   )
     throw errorDeFoto("El identificador de la foto no es válido.");
   try {
-    return await baseDatos.eliminar(identificador, usuarioId);
+    return await repositorio.eliminar(identificador, usuarioId);
   } catch (error) {
     if (error.number === 547)
       throw errorDeFoto(
