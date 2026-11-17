@@ -1,4 +1,4 @@
-const usuarios = require("./usuario-controlador").operaciones;
+const usuarios = require("../services/usuario-servicio");
 const sesion = require("../middlewares/sesion");
 
 exports.ingreso = async (req, res, next) => {
@@ -26,4 +26,19 @@ exports.sesion = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+exports.registro = async (req, res, next) => {
+  try {
+    await usuarios.registrar(req.body);
+    res.status(201).json({ mensaje: 'Cuenta creada. Ya podés ingresar.' });
+  } catch (error) { next(error); }
+};
+
+exports.salida = (req, res, next) => {
+  req.session.destroy((error) => {
+    if (error) return next(error);
+    sesion.limpiarCookie(res);
+    res.json({ mensaje: 'Sesión cerrada.' });
+  });
 };

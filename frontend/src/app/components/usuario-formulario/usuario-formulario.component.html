@@ -1,10 +1,57 @@
-<h1>{{ id ? 'Editar usuario' : 'Crear usuario' }}</h1>@if (error()) { <p role="alert">{{ error() }}</p> }
-<form #formulario="ngForm" (ngSubmit)="guardar(formulario)">
-<label>Nombre <input name="nombre" [(ngModel)]="datos.nombre" required maxlength="100"></label>
-<label>Apellido <input name="apellido" [(ngModel)]="datos.apellido" required maxlength="100"></label>
-<label>Correo <input type="email" name="email" [(ngModel)]="datos.email" required email></label>
-<label>Rol <select name="rol" [(ngModel)]="datos.rol"><option value="usuario">Usuario</option><option value="administrador">Administrador</option></select></label>
-<label>Cuenta activa <input type="checkbox" name="activo" [(ngModel)]="datos.activo"></label>
-<label>Contraseña {{ id ? '(opcional)' : '(obligatoria)' }}
-<input type="password" name="password" [(ngModel)]="datos.password" [required]="!id" minlength="12"></label>
-<button type="submit">Guardar</button><a routerLink="/usuarios">Cancelar</a></form>
+<section class="mb-4">
+  <h1>{{ id ? 'Editar usuario' : 'Crear usuario' }}</h1>
+  <p class="text-secondary">Completá los datos de la cuenta.</p>
+  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
+  @if (cargando()) { <p>Cargando los datos del usuario...</p> }
+
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" autocomplete="off" class="formulario-simple">
+    <fieldset [disabled]="cargando() || guardando()">
+      <div class="mb-3">
+        <label for="usuario-nombre" class="form-label">Nombre</label>
+        <input id="usuario-nombre" class="form-control" formControlName="nombre" maxlength="100" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="usuario-apellido" class="form-label">Apellido</label>
+        <input id="usuario-apellido" class="form-control" formControlName="apellido" maxlength="100" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="usuario-email" class="form-label">Correo electrónico</label>
+        <input id="usuario-email" class="form-control" type="email" formControlName="email" maxlength="150"
+          autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="usuario-rol" class="form-label">Rol</label>
+        <select id="usuario-rol" class="form-select" formControlName="rol">
+          <option value="usuario">Usuario</option>
+          <option value="administrador">Administrador</option>
+        </select>
+      </div>
+      <div class="form-check mb-3">
+        <input id="usuario-activo" type="checkbox" class="form-check-input" formControlName="activo">
+        <label for="usuario-activo" class="form-check-label">Cuenta activa</label>
+      </div>
+      @if (id) {
+      <div class="form-check mb-3">
+        <input #opcionClave id="usuario-cambiar-clave" type="checkbox" class="form-check-input"
+          [checked]="cambiarClave()"
+          (change)="cambiarClave.set(opcionClave.checked); formulario.controls.password.setValue('')">
+        <label for="usuario-cambiar-clave" class="form-check-label">Cambiar contraseña</label>
+      </div>
+      }
+      @if (!id || cambiarClave()) {
+      <div class="mb-3">
+        <label for="usuario-password" class="form-label">{{ id ? 'Nueva contraseña' : 'Contraseña' }}</label>
+        <input id="usuario-password" type="password" class="form-control" formControlName="password"
+          autocomplete="new-password" minlength="12" maxlength="128">
+        <div class="form-text">Entre 12 y 128 caracteres.</div>
+      </div>
+      } @else {
+      <p class="text-secondary">La contraseña actual se conservará.</p>
+      }
+      <button type="submit" class="btn btn-primary me-2" [disabled]="cargando() || guardando()">
+        {{ guardando() ? 'Guardando...' : 'Guardar' }}
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/usuarios">Cancelar</a>
+    </fieldset>
+  </form>
+</section>

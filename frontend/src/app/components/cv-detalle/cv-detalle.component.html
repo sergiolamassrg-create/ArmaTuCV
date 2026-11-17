@@ -1,0 +1,66 @@
+<div class="acciones-cv d-flex flex-wrap gap-2 mb-3">
+  <a routerLink="/curriculums">Volver a mis currículums</a>
+  @if (cv(); as documento) {
+  <a [routerLink]="['/curriculums', documento.id, 'editar']">Editar CV</a>
+  <button type="button" class="btn btn-primary" (click)="imprimir()">Imprimir / Guardar como PDF A4</button>
+  }
+</div>
+@if (error()) { <p role="alert">{{ error() }}</p> }
+@if (cv(); as documento) {
+<article class="documento-cv border rounded shadow-sm" [style.font-size.pt]="documento.tamanoLetra">
+  <h1>{{ documento.nombreCompleto }}</h1>
+  <h2>{{ documento.puesto }}</h2>
+  <p>{{ documento.titulo }}</p>
+  <p>{{ documento.email || '' }} · {{ documento.telefono || '' }} · {{ documento.ubicacion || '' }}</p>
+  @if (documento.linkedin) { <p>LinkedIn: {{ documento.linkedin }}</p> }
+  @if (documento.github) { <p>GitHub: {{ documento.github }}</p> }
+  @if (documento.portfolio) { <p>Portfolio: {{ documento.portfolio }}</p> }
+  @if (documento.plantilla === 'con-foto' && documento.foto) {
+  <img class="foto-cv" [src]="documento.foto" alt="Fotografía del currículum">
+  }
+  @if (documento.resumen) { <h3>Perfil profesional</h3>
+  <p>{{ documento.resumen }}</p> }
+  @if (documento.experiencias.length) {
+  <h3>Experiencia laboral</h3>
+  @for (exp of documento.experiencias; track $index) {
+  <section>
+    <strong>{{ exp.puesto }} — {{ exp.empresa }}</strong>
+    <p>{{ exp.fechaInicio || '' }} {{ exp.fechaFin ? 'a ' + exp.fechaFin : '' }}</p>
+    <p>{{ exp.descripcion }}</p>
+  </section>
+  }
+  }
+  @if (documento.educaciones.length) {
+  <h3>Educación</h3>
+  @for (estudio of documento.educaciones; track $index) {
+  <section><strong>{{ estudio.titulo }}</strong> — {{ estudio.institucion }}
+    <p>{{ estudio.anioInicio }} {{ estudio.anioFin ? 'a ' + estudio.anioFin : '' }} · {{ estudio.estado }}</p>
+  </section>
+  }
+  }
+  @if (documento.habilidades.length) {
+  <h3>Habilidades</h3>
+  <ul>@for (habilidad of documento.habilidades; track $index) { <li>{{ habilidad.nombre }} ({{ habilidad.tipo }})</li> }
+  </ul>
+  }
+  @if (documento.idiomas.length) {
+  <h3>Idiomas</h3>
+  <ul>@for (idioma of documento.idiomas; track $index) { <li>{{ idioma.idioma }} — {{ idioma.nivel }}</li> }</ul>
+  }
+  @if (documento.complementos.length) {
+  <h3>Cursos, certificaciones y proyectos</h3>
+  @for (complemento of documento.complementos; track $index) {
+  <section><strong>{{ complemento.titulo }}</strong> — {{ complemento.tipo }}
+    <p>{{ complemento.descripcion }} {{ complemento.anio || '' }}</p>
+  </section>
+  }
+  }
+</article>
+<section class="acciones-cv">
+  <h2>Fotografía del currículum</h2>
+  <p>Para usar la nueva foto en el PDF, primero guardá la selección.</p>
+  <app-fotos [seleccion]="documento.fotoId" (elegir)="seleccionarFoto($event)" />
+  <button class="btn btn-outline-secondary" type="button" (click)="seleccionarFoto(null)"
+    [disabled]="!documento.fotoId">Sin foto</button>
+</section>
+}

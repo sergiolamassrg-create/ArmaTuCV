@@ -1,0 +1,41 @@
+<section class="formulario-simple">
+  <h1>Mi perfil</h1>
+  <p class="text-secondary">Estos datos personales también aparecen en tus currículums.</p>
+  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
+  @if (aviso()) { <div class="alert alert-success" role="status">{{ aviso() }}</div> }
+  @if (cargando()) { <p>Cargando perfil...</p> }
+  @if (email()) { <p>Correo de tu cuenta: <strong>{{ email() }}</strong></p> }
+  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+    <fieldset [disabled]="cargando() || guardando()">
+      <div class="mb-3"><label class="form-label" for="perfil-nombre">Nombre</label>
+        <input class="form-control" id="perfil-nombre" formControlName="nombre" maxlength="100"
+          autocomplete="given-name">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-apellido">Apellido</label>
+        <input class="form-control" id="perfil-apellido" formControlName="apellido" maxlength="100"
+          autocomplete="family-name">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-telefono">Teléfono</label>
+        <input class="form-control" id="perfil-telefono" formControlName="telefono" maxlength="40" autocomplete="tel">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-ubicacion">Ubicación</label>
+        <input class="form-control" id="perfil-ubicacion" formControlName="ubicacion" maxlength="200">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-linkedin">LinkedIn (URL completa)</label>
+        <input class="form-control" id="perfil-linkedin" formControlName="linkedin" maxlength="250"
+          placeholder="https://...">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-github">GitHub (URL completa)</label>
+        <input class="form-control" id="perfil-github" formControlName="github" maxlength="250"
+          placeholder="https://...">
+      </div>
+      <div class="mb-3"><label class="form-label" for="perfil-portfolio">Portfolio (URL completa)</label>
+        <input class="form-control" id="perfil-portfolio" formControlName="portfolio" maxlength="250"
+          placeholder="https://...">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="cargando() || guardando()">
+        {{ guardando() ? 'Guardando...' : 'Guardar perfil' }}
+      </button>
+    </fieldset>
+  </form>
+</section>

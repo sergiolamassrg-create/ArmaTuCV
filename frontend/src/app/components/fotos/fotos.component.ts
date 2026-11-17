@@ -1,12 +1,17 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FotoServicio } from '../../services/foto.servicio';
 import { Foto } from '../../models/foto';
 
-@Component({ selector: 'app-fotos', templateUrl: './fotos.component.html' })
-export class FotosComponent implements OnInit {
+@Component({
+  selector: 'app-fotos',
+  templateUrl: './fotos.component.html'
+})
+
+export class FotosComponent {
   private servicio = inject(FotoServicio);
   @Input() seleccion: number | null = null;
+  @Input() permitirElegir = true;
   @Input() bloqueado = false;
   @Output() elegir = new EventEmitter<Foto | null>();
   @Output() ocupado = new EventEmitter<boolean>();
@@ -47,7 +52,24 @@ export class FotosComponent implements OnInit {
     }
   }
 
-  // El procesamiento de imagen permanece en el componente durante Fase 2.
+  eliminar(foto: Foto) {
+    if (this.pendiente() || foto.enUso > 0) return;
+    if (!confirm('¿Eliminar la foto ' + foto.nombre + '?')) return;
+    this.error.set('');
+    this.pendiente.set(true);
+    this.servicio.eliminar(foto.id).subscribe({
+      next: () => {
+        this.fotos.update(lista => lista.filter(item => item.id !== foto.id));
+        if (this.seleccion === foto.id) this.elegir.emit(null);
+        this.pendiente.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudo eliminar la foto. Si está en uso, primero desasociala del CV.');
+        this.pendiente.set(false);
+      }
+    });
+  }
+
   async prepararFoto(archivo: File): Promise<string> {
     if (!['image/jpeg', 'image/png'].includes(archivo.type) || archivo.size > 5 * 1024 * 1024)
       throw new Error('Elegí un JPG o PNG de hasta 5 MB.');
@@ -81,4 +103,5 @@ export class FotosComponent implements OnInit {
       imagen.close();
     }
   }
+
 }
