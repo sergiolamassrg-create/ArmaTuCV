@@ -1,65 +1,4 @@
-const baseDatos = {};
-const sql = require('mssql');
-const { obtenerConexionSQL } = require('../database/conexion');
-const consultas = require('../database/consultas');
-
-baseDatos.listar = async () => {
-    const conexion = await obtenerConexionSQL();
-    return (await conexion.request().query(consultas.listarUsuarios)).recordset;
-};
-
-baseDatos.obtener = async (id) => {
-    const conexion = await obtenerConexionSQL();
-    return (await conexion.request().input('id', sql.Int, id).query(consultas.obtenerUsuario)).recordset[0];
-};
-
-baseDatos.obtenerPorCorreo = async (correo) => {
-    const conexion = await obtenerConexionSQL();
-    return (await conexion.request().input('email', sql.NVarChar(150), correo).query(consultas.usuarioPorCorreo)).recordset[0];
-};
-
-async function guardar(usuario, id) {
-    const conexion = await obtenerConexionSQL();
-    const transaccion = new sql.Transaction(conexion);
-    let revertida = false;
-    transaccion.on('rollback', () => { revertida = true; });
-    await transaccion.begin();
-    try {
-        const resultado = await new sql.Request(transaccion)
-            .input('id', sql.Int, id ?? null)
-            .input('email', sql.NVarChar(150), usuario.email)
-            .input('claveHash', sql.NVarChar(255), usuario.claveHash)
-            .input('rol', sql.VarChar(15), usuario.rol === 'administrador' ? 'ADMIN' : 'USUARIO')
-            .input('activo', sql.Bit, usuario.activo)
-            .query(id ? consultas.actualizarUsuario : consultas.crearUsuario);
-        const guardado = resultado.recordset[0];
-        if (!guardado) { await transaccion.rollback(); return undefined; }
-        await new sql.Request(transaccion)
-            .input('id', sql.Int, guardado.id)
-            .input('nombre', sql.NVarChar(100), usuario.nombre)
-            .input('apellido', sql.NVarChar(100), usuario.apellido)
-            .query(id ? consultas.actualizarNombre : consultas.crearPerfil);
-        await transaccion.commit();
-        return await baseDatos.obtener(guardado.id);
-    } catch (error) {
-        if (!revertida) await transaccion.rollback();
-        throw error;
-    }
-}
-
-baseDatos.crear = async (usuario) => await guardar(usuario);
-
-baseDatos.actualizar = async (id, usuario) => await guardar(usuario, id);
-
-baseDatos.desactivar = async (id) => {
-    const conexion = await obtenerConexionSQL();
-    return (await conexion.request().input('id', sql.Int, id).query(consultas.desactivarUsuario)).rowsAffected[0];
-};
-
-baseDatos.curriculums = async (id) => {
-    const conexion = await obtenerConexionSQL();
-    return (await conexion.request().input('id', sql.Int, id).query(consultas.curriculumsDeUsuario)).recordset;
-};
+const repositorio = require('../repositories/usuario-repositorio');
 
 const servicio = {};
 
@@ -132,7 +71,7 @@ async function guardarUsuarioNuevo(datos, registroPublico) {
     const usuario = prepararDatos(datos, registroPublico);
     usuario.claveHash = await argon2.hash(validarClave(datos.password), { type: argon2.argon2id });
     try {
-        return datosPublicos(await baseDatos.crear(usuario));
+        return datosPublicos(await repositorio.crear(usuario));
     } catch (error) {
         comprobarDuplicado(error);
     }
@@ -148,7 +87,7 @@ servicio.ingresar = async (datos) => {
     if (typeof clave !== 'string' || clave.length < 1 || clave.length > 128) {
         throw errorDeUsuario(401, 'Correo o contraseña incorrectos.');
     }
-    const usuario = await baseDatos.obtenerPorCorreo(correo);
+    const usuario = await repositorio.obtenerPorCorreo(correo);
     // También se verifica un hash cuando la cuenta no existe, para no responder inmediatamente.
     const hash = usuario && usuario.claveHash ? usuario.claveHash : process.env.CLAVE_HASH_COMPARACION;
     const coincide = await argon2.verify(hash, clave);
@@ -158,10 +97,10 @@ servicio.ingresar = async (datos) => {
     return usuario;
 };
 
-servicio.listar = async () => await baseDatos.listar();
+servicio.listar = async () => await repositorio.listar();
 
 servicio.obtener = async (id) => {
-    const usuario = await baseDatos.obtener(validarId(id));
+    const usuario = await repositorio.obtener(validarId(id));
     if (!usuario) throw errorDeUsuario(404, 'El usuario no existe.');
     return datosPublicos(usuario);
 };
@@ -177,7 +116,7 @@ servicio.actualizar = async (id, datos, administradorId) => {
         usuario.claveHash = await argon2.hash(validarClave(datos.password), { type: argon2.argon2id });
     }
     try {
-        const resultado = await baseDatos.actualizar(identificador, usuario);
+        const resultado = await repositorio.actualizar(identificador, usuario);
         if (!resultado) throw errorDeUsuario(404, 'El usuario no existe.');
         return datosPublicos(resultado);
     } catch (error) { comprobarDuplicado(error); }
@@ -186,13 +125,13 @@ servicio.actualizar = async (id, datos, administradorId) => {
 servicio.desactivar = async (id, administradorId) => {
     const identificador = validarId(id);
     if (identificador === administradorId) throw errorDeUsuario(400, 'No podés desactivar tu propia cuenta.');
-    if (!await baseDatos.desactivar(identificador)) throw errorDeUsuario(404, 'El usuario no existe.');
+    if (!await repositorio.desactivar(identificador)) throw errorDeUsuario(404, 'El usuario no existe.');
 };
 
 servicio.curriculums = async (id) => {
     const identificador = validarId(id);
     await servicio.obtener(identificador);
-    return await baseDatos.curriculums(identificador);
+    return await repositorio.curriculums(identificador);
 };
 
 servicio.datosPublicos = datosPublicos;
@@ -201,6 +140,6 @@ servicio.validarClave = validarClave;
 
 servicio.validarCorreo = validarCorreo;
 
-servicio.consultarCuenta = baseDatos.obtener;
+servicio.consultarCuenta = repositorio.obtener;
 
 module.exports = servicio;

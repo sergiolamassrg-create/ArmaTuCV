@@ -1,5 +1,5 @@
 const session = require("express-session");
-const usuarios = require("../controllers/usuario-controlador");
+const usuarios = require("../services/usuario-servicio");
 
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
   throw new Error(
