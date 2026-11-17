@@ -1,16 +1,6 @@
-const baseDatos = {};
-const sql = require("mssql");
-const { obtenerConexionSQL } = require("../database/conexion");
-const consultas = require("../database/consultas");
+const repositorio = require("../repositories/perfil-repositorio");
 
-baseDatos.obtener = async (usuarioId) => {
-  const conexion = await obtenerConexionSQL();
-  const perfil = (
-    await conexion
-      .request()
-      .input("usuarioId", sql.Int, usuarioId)
-      .query(consultas.obtenerPerfil)
-  ).recordset[0];
+function presentar(perfil) {
   if (perfil) {
     // La base de demostración tiene enlaces antiguos sin protocolo.
     for (const campo of ["linkedin", "github", "portfolio"]) {
@@ -23,27 +13,11 @@ baseDatos.obtener = async (usuarioId) => {
     }
   }
   return perfil;
-};
-
-baseDatos.actualizar = async (datos, usuarioId) => {
-  const conexion = await obtenerConexionSQL();
-  await conexion
-    .request()
-    .input("usuarioId", sql.Int, usuarioId)
-    .input("nombre", sql.NVarChar(100), datos.nombre)
-    .input("apellido", sql.NVarChar(100), datos.apellido)
-    .input("telefono", sql.NVarChar(40), datos.telefono)
-    .input("ubicacion", sql.NVarChar(200), datos.ubicacion)
-    .input("linkedin", sql.NVarChar(250), datos.linkedin)
-    .input("github", sql.NVarChar(250), datos.github)
-    .input("portfolio", sql.NVarChar(250), datos.portfolio)
-    .query(consultas.actualizarPerfil);
-  return await baseDatos.obtener(usuarioId);
-};
+}
 
 const servicio = {};
 
-servicio.obtener = async (usuarioId) => await baseDatos.obtener(usuarioId);
+servicio.obtener = async (usuarioId) => presentar(await repositorio.obtener(usuarioId));
 
 servicio.actualizar = async (datos, usuarioId) => {
   const limites = {
@@ -78,7 +52,7 @@ servicio.actualizar = async (datos, usuarioId) => {
       throw error;
     }
   }
-  return await baseDatos.actualizar(perfil, usuarioId);
+  return presentar(await repositorio.actualizar(perfil, usuarioId));
 };
 
 
