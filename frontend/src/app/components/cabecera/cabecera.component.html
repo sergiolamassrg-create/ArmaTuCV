@@ -1,0 +1,51 @@
+<header class="bg-white border-bottom py-3">
+  <nav
+    class="container d-flex flex-wrap align-items-center gap-4"
+    aria-label="Navegación principal"
+  >
+    <a
+      class="d-flex align-items-center gap-2 fw-bold fs-4 text-primary text-decoration-none"
+      routerLink="/"
+      aria-label="ArmaTuCV, inicio"
+    >
+      <img src="imagenes/cv64.png" width="32" height="32" alt="" />
+      ArmaTuCV
+    </a>
+    <div class="d-flex align-items-center gap-3">
+      <a class="nav-link" routerLink="/">Inicio</a>
+      <a class="nav-link" routerLink="/guia-del-cv">Guía del CV</a>
+      <a class="nav-link" routerLink="/sobre-nosotros">Sobre nosotros</a>
+      @if (acceso.usuario()) {
+        <a class="nav-link" routerLink="/curriculums">Mis CV</a>
+        <a class="nav-link" routerLink="/perfil">Mi perfil</a>
+        @if (acceso.usuario()?.rol === 'administrador') {
+          <a class="nav-link" routerLink="/usuarios">Usuarios</a>
+        }
+      }
+    </div>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      @if (acceso.usuario(); as usuario) {
+        <div class="small">
+          <span class="d-block">Hola, {{ usuario.nombre }} {{ usuario.apellido }}</span>
+          @if (usuario.rol === 'administrador') {
+            <span class="badge text-bg-primary">Administrador</span>
+          }
+        </div>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          type="button"
+          (click)="salir()"
+          [disabled]="saliendo()"
+        >
+          {{ saliendo() ? 'Cerrando...' : 'Cerrar sesión' }}
+        </button>
+      } @else if (acceso.usuario() === null) {
+        <a class="btn btn-outline-primary btn-sm" routerLink="/acceso">Ingresar</a>
+        <a class="btn btn-primary btn-sm" routerLink="/registro">Crear cuenta</a>
+      }
+    </div>
+  </nav>
+  @if (error()) {
+    <p class="container text-danger small mt-3 mb-0" role="alert">{{ error() }}</p>
+  }
+</header>
