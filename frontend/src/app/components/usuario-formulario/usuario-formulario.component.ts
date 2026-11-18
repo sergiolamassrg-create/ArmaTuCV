@@ -6,9 +6,8 @@ import { DatosUsuario } from '../../models/usuario';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './usuario-formulario.component.html'
+  templateUrl: './usuario-formulario.component.html',
 })
-
 export class UsuarioFormularioComponent {
   private servicio = inject(UsuarioServicio);
   private ruta = inject(ActivatedRoute);
@@ -19,7 +18,6 @@ export class UsuarioFormularioComponent {
   error = signal('');
   cargando = signal(false);
   guardando = signal(false);
-  cambiarClave = signal(false);
 
   formulario = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.maxLength(100)]],
@@ -27,42 +25,48 @@ export class UsuarioFormularioComponent {
     email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
     rol: ['usuario' as 'usuario' | 'administrador', Validators.required],
     activo: [true],
-    password: ['']
+    password: [''],
+    cambiarClave: [false],
   });
 
   ngOnInit(): void {
+    this.configurarValidacionClave();
+    this.formulario.controls.cambiarClave.valueChanges.subscribe(() => {
+      this.formulario.controls.password.reset('');
+      this.configurarValidacionClave();
+    });
     if (!this.id) return;
     this.cargando.set(true);
     this.servicio.obtener(this.id).subscribe({
-      next: usuario => {
+      next: (usuario) => {
         this.formulario.patchValue({
           nombre: usuario.nombre,
           apellido: usuario.apellido,
           email: usuario.email,
           rol: usuario.rol,
           activo: usuario.activo,
-          password: ''
+          password: '',
         });
         this.cargando.set(false);
       },
       error: () => {
         this.error.set('No se pudo cargar la cuenta.');
         this.cargando.set(false);
-      }
+      },
     });
   }
 
   guardar(): void {
     if (this.cargando() || this.guardando()) return;
-    this.formulario.markAllAsTouched();
     if (this.formulario.invalid) {
-      this.error.set('Completá correctamente nombre, apellido y correo.');
+      this.formulario.markAllAsTouched();
+      this.error.set('Revisá los campos indicados de la cuenta.');
       return;
     }
     const valores = this.formulario.getRawValue();
     const nuevaClave = valores.password;
-    if ((!this.id || this.cambiarClave()) && (nuevaClave.length < 12 || nuevaClave.length > 128)) {
-      this.error.set('La contraseña debe tener entre 12 y 128 caracteres.');
+    if ((!this.id || valores.cambiarClave) && !nuevaClave.trim()) {
+      this.error.set('La contraseña no puede contener solamente espacios.');
       return;
     }
     const datos: DatosUsuario = {
@@ -71,12 +75,8 @@ export class UsuarioFormularioComponent {
       email: valores.email.trim(),
       rol: valores.rol,
       activo: valores.activo,
-      password: (!this.id || this.cambiarClave()) ? nuevaClave : ''
+      password: !this.id || valores.cambiarClave ? nuevaClave : '',
     };
-    if (!this.id) {
-      // La contraseña sí es obligatoria para crear una cuenta.
-      datos.password = nuevaClave;
-    }
     this.error.set('');
     this.guardando.set(true);
     const peticion = this.id
@@ -86,18 +86,36 @@ export class UsuarioFormularioComponent {
       next: () => {
         this.guardando.set(false);
         this.formulario.reset({
-          nombre: '', apellido: '', email: '', rol: 'usuario', activo: true, password: ''
+          nombre: '',
+          apellido: '',
+          email: '',
+          rol: 'usuario',
+          activo: true,
+          password: '',
+          cambiarClave: false,
         });
-        this.cambiarClave.set(false);
         this.navegador.navigate(['/usuarios']);
       },
-      error: error => {
+      error: (error) => {
         this.guardando.set(false);
         this.error.set(error.error?.mensaje || 'No se pudo guardar la cuenta.');
         // Conservar nombre, apellido y correo para corregir el error.
         // La clave sólo se usa si el usuario seleccionó cambiarla.
-      }
+      },
     });
   }
 
+  configurarValidacionClave(): void {
+    const clave = this.formulario.controls.password;
+    if (!this.id || this.formulario.controls.cambiarClave.value) {
+      clave.setValidators([
+        Validators.required,
+        Validators.minLength(12),
+        Validators.maxLength(128),
+      ]);
+    } else {
+      clave.clearValidators();
+    }
+    clave.updateValueAndValidity();
+  }
 }

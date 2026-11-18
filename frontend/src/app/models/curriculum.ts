@@ -40,16 +40,14 @@ export interface DatosCurriculum {
   habilidades: Habilidad[];
   idiomas: Idioma[];
   complementos: Complemento[];
-  fotoId: number | null;
-  plantilla: 'sin-foto' | 'con-foto';
   tamanoLetra: number;
   mostrarIconos: boolean;
 }
 
 export interface Curriculum extends DatosCurriculum {
   id: number;
+  usuarioId: number;
   nombreCompleto: string;
-  foto: string;
   email?: string;
   telefono?: string;
   ubicacion?: string;
@@ -63,18 +61,3 @@ export interface ResumenCurriculum {
   titulo: string;
   nombreCompleto: string;
 }
-
-export const nuevoCV = (): DatosCurriculum => ({
-  titulo: '',
-  puesto: '',
-  resumen: '',
-  experiencias: [],
-  educaciones: [],
-  habilidades: [],
-  idiomas: [],
-  complementos: [],
-  fotoId: null,
-  plantilla: 'sin-foto',
-  tamanoLetra: 11,
-  mostrarIconos: false
-});

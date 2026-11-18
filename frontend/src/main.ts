@@ -7,10 +7,7 @@ import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes),
-    provideHttpClient(withInterceptors([revisarSesion])),
-  ],
+  providers: [provideRouter(routes), provideHttpClient(withInterceptors([revisarSesion]))],
 }).catch((error) => {
   console.error('No se pudo iniciar ArmaTuCV.', error);
 });

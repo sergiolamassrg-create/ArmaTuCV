@@ -25,6 +25,10 @@ export interface DatosPerfil {
 @Injectable({ providedIn: 'root' })
 export class PerfilServicio {
   private http = inject(HttpClient);
-  obtener() { return this.http.get<Perfil>('/api/perfil'); }
-  actualizar(datos: DatosPerfil) { return this.http.put<Perfil>('/api/perfil', datos); }
+  obtener() {
+    return this.http.get<Perfil>('/api/perfil');
+  }
+  actualizar(datos: DatosPerfil) {
+    return this.http.put<Perfil>('/api/perfil', datos);
+  }
 }

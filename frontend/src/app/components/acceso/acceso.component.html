@@ -1,40 +1,117 @@
-<section class="formulario-simple">
+<section class="col-7 card card-body p-4">
   <h1>{{ registro ? 'Crear cuenta' : 'Ingresar a ArmaTuCV' }}</h1>
-  @if (acceso.aviso()) { <div class="alert alert-info" role="status">{{ acceso.aviso() }}</div> }
-  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
+  @if (acceso.aviso()) {
+    <div class="alert alert-info" role="status">{{ acceso.aviso() }}</div>
+  }
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  }
   <form [formGroup]="formulario" (ngSubmit)="enviar()">
     <fieldset [disabled]="pendiente()">
       @if (registro) {
-      <div class="mb-3"><label for="acceso-nombre" class="form-label">Nombre</label>
-        <input id="acceso-nombre" class="form-control" formControlName="nombre" maxlength="100"
-          autocomplete="given-name">
-      </div>
-      <div class="mb-3"><label for="acceso-apellido" class="form-label">Apellido</label>
-        <input id="acceso-apellido" class="form-control" formControlName="apellido" maxlength="100"
-          autocomplete="family-name">
-      </div>
+        <div class="mb-3">
+          <label for="acceso-nombre" class="form-label">Nombre</label>
+          <input
+            id="acceso-nombre"
+            class="form-control"
+            formControlName="nombre"
+            maxlength="100"
+            autocomplete="given-name"
+          />
+          @if (formulario.controls.nombre.touched && formulario.controls.nombre.hasError('required')) {
+            <p class="text-danger small">El nombre es obligatorio.</p>
+          }
+          @if (formulario.controls.nombre.touched && formulario.controls.nombre.hasError('maxlength')) {
+            <p class="text-danger small">El nombre admite hasta 100 caracteres.</p>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="acceso-apellido" class="form-label">Apellido</label>
+          <input
+            id="acceso-apellido"
+            class="form-control"
+            formControlName="apellido"
+            maxlength="100"
+            autocomplete="family-name"
+          />
+          @if (formulario.controls.apellido.touched && formulario.controls.apellido.hasError('required')) {
+            <p class="text-danger small">El apellido es obligatorio.</p>
+          }
+          @if (formulario.controls.apellido.touched && formulario.controls.apellido.hasError('maxlength')) {
+            <p class="text-danger small">El apellido admite hasta 100 caracteres.</p>
+          }
+        </div>
       }
-      <div class="mb-3"><label for="acceso-email" class="form-label">Correo</label>
-        <input id="acceso-email" class="form-control" type="email" formControlName="email" autocomplete="username">
+      <div class="mb-3">
+        <label for="acceso-email" class="form-label">Correo</label>
+        <input
+          id="acceso-email"
+          class="form-control"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+        />
+        @if (formulario.controls.email.touched && formulario.controls.email.hasError('required')) {
+          <p class="text-danger small">El correo es obligatorio.</p>
+        }
+        @if (formulario.controls.email.touched && formulario.controls.email.hasError('email')) {
+          <p class="text-danger small">Ingresá un correo válido.</p>
+        }
+        @if (formulario.controls.email.touched && formulario.controls.email.hasError('maxlength')) {
+          <p class="text-danger small">El correo admite hasta 150 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label for="acceso-password" class="form-label">Contraseña</label>
-        <input id="acceso-password" class="form-control" type="password" formControlName="password"
-          [attr.autocomplete]="registro ? 'new-password' : 'current-password'">
+      <div class="mb-3">
+        <label for="acceso-password" class="form-label">Contraseña</label>
+        <input
+          id="acceso-password"
+          class="form-control"
+          type="password"
+          formControlName="password"
+          [attr.autocomplete]="registro ? 'new-password' : 'current-password'"
+        />
+        @if (formulario.controls.password.touched && formulario.controls.password.hasError('required')) {
+          <p class="text-danger small">La contraseña es obligatoria.</p>
+        }
+        @if (formulario.controls.password.touched && formulario.controls.password.hasError('minlength')) {
+          <p class="text-danger small">La contraseña debe tener al menos 12 caracteres.</p>
+        }
+        @if (formulario.controls.password.touched && formulario.controls.password.hasError('maxlength')) {
+          <p class="text-danger small">La contraseña admite hasta 128 caracteres.</p>
+        }
       </div>
       @if (registro) {
-      <div class="mb-3"><label for="acceso-repetir" class="form-label">Repetir contraseña</label>
-        <input id="acceso-repetir" class="form-control" type="password" formControlName="repetirClave"
-          autocomplete="new-password">
-      </div>
-      <p class="form-text">La contraseña debe tener entre 12 y 128 caracteres.</p>
+        <div class="mb-3">
+          <label for="acceso-repetir" class="form-label">Repetir contraseña</label>
+          <input
+            id="acceso-repetir"
+            class="form-control"
+            type="password"
+            formControlName="repetirClave"
+            autocomplete="new-password"
+          />
+          @if (formulario.controls.repetirClave.touched && formulario.controls.repetirClave.hasError('required')) {
+            <p class="text-danger small">Repetí la contraseña.</p>
+          }
+          @if (
+            formulario.controls.repetirClave.touched &&
+            formulario.controls.repetirClave.value !== formulario.controls.password.value
+          ) {
+            <p class="text-danger small">Las contraseñas deben coincidir.</p>
+          }
+        </div>
+        <p class="form-text">La contraseña debe tener entre 12 y 128 caracteres.</p>
       }
-      <button class="btn btn-primary" type="submit" [disabled]="pendiente()">
-        {{ pendiente() ? 'Procesando...' : (registro ? 'Crear cuenta' : 'Ingresar') }}
+      <button class="btn btn-primary" type="submit" [disabled]="pendiente() || formulario.invalid">
+        {{ pendiente() ? 'Procesando...' : registro ? 'Crear cuenta' : 'Ingresar' }}
       </button>
     </fieldset>
   </form>
-  <p class="mt-3">
-    @if (registro) { <a routerLink="/acceso">Ya tengo cuenta</a> }
-    @else { <a routerLink="/registro">Crear una cuenta</a> }
+  <p class="mt-3 mb-0">
+    @if (registro) {
+      <a routerLink="/acceso">Ya tengo cuenta</a>
+    } @else {
+      <a routerLink="/registro">Crear una cuenta</a>
+    }
   </p>
 </section>

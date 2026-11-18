@@ -1,13 +1,77 @@
-<section>
-  <h1>Sobre nosotros</h1>
-  <p>ArmaTuCV es un proyecto académico para crear, editar y organizar currículums y exportarlos a PDF.</p>
-  <h2 class="h4">Equipo de desarrollo</h2>
-  <ul class="list-group mb-3">
-    <li class="list-group-item">Joaquín — Usuarios y administración</li>
-    <li class="list-group-item">Sergio — Currículums</li>
-    <li class="list-group-item">Aylen — Fotografías y PDF</li>
-    <li class="list-group-item">Dayana — Acceso, perfil y navegación</li>
+<section class="col-10" aria-labelledby="titulo-nosotros">
+  <h1 id="titulo-nosotros">Sobre nosotros</h1>
+  <p class="lead">Somos estudiantes de Desarrollo de Software del IFTS N.º 11.</p>
+  <p>
+    Creamos ArmaTuCV como proyecto final para ayudar a preparar y organizar un currículum, a partir
+    de lo trabajado en clase.
+  </p>
+
+  <h2 class="h4 mt-4 mb-3">Equipo y contacto</h2>
+  <ul class="row g-3 list-unstyled mb-4">
+    <li class="col-6">
+      <article class="card card-body h-100">
+        <h3 class="h5">Sergio Lamas</h3>
+        <p class="text-primary mb-2">Currículums</p>
+        <p class="text-secondary">
+          Los componentes de listado y formulario permiten crear, editar y organizar las versiones
+          del CV. CurriculumServicio consulta, guarda, actualiza y elimina los currículums.
+        </p>
+        <a class="small text-break mt-auto" href="mailto:sergio.lamas.srg@gmail.com">
+          sergio.lamas.srg&#64;gmail.com
+        </a>
+      </article>
+    </li>
+    <li class="col-6">
+      <article class="card card-body h-100">
+        <h3 class="h5">Dayana Tapia</h3>
+        <p class="text-primary mb-2">Acceso, perfil y navegación</p>
+        <p class="text-secondary">
+          Acceso y Perfil gestionan el ingreso y los datos personales; Cabecera y PiePagina
+          comparten la navegación. AccesoServicio maneja la sesión y PerfilServicio carga y guarda
+          el perfil.
+        </p>
+        <a class="small text-break mt-auto" href="mailto:tapiamaday1991@gmail.com">
+          tapiamaday1991&#64;gmail.com
+        </a>
+      </article>
+    </li>
+    <li class="col-6">
+      <article class="card card-body h-100">
+        <h3 class="h5">Joaquín Gonzalez</h3>
+        <p class="text-primary mb-2">Usuarios y administración</p>
+        <p class="text-secondary">
+          Los componentes de usuarios y su formulario permiten administrar las cuentas.
+          UsuarioServicio consulta, crea, edita y desactiva usuarios, y consulta los títulos de sus
+          CV.
+        </p>
+        <a class="small text-break mt-auto" href="mailto:afscaiser@gmail.com">
+          afscaiser&#64;gmail.com
+        </a>
+      </article>
+    </li>
+    <li class="col-6">
+      <article class="card card-body h-100">
+        <h3 class="h5">Aylen Abalos</h3>
+        <p class="text-primary mb-2">PDF</p>
+        <p class="text-secondary">
+          El componente de detalle presenta el currículum y abre la impresión del navegador para
+          imprimirlo o guardarlo como PDF A4.
+        </p>
+        <a class="small text-break mt-auto" href="mailto:neday9245@gmail.com">
+          neday9245&#64;gmail.com
+        </a>
+      </article>
+    </li>
   </ul>
-  <p>Somos estudiantes de la Tecnicatura Superior en Desarrollo de Software del IFTS N.º 11.</p>
-  <p class="text-secondary">Este proyecto no es un servicio oficial del IFTS N.º 11.</p>
+
+  <div class="border-top pt-3">
+    <h2 class="h5">Aviso académico</h2>
+    <p class="text-secondary">
+      No es un sitio oficial del IFTS N.º 11. Durante las pruebas, utilizá datos ficticios.
+    </p>
+    <div class="d-flex gap-2">
+      <a class="btn btn-primary" routerLink="/guia-del-cv">Aprendé a armar tu CV</a>
+      <a class="btn btn-outline-secondary" routerLink="/">Volver al inicio</a>
+    </div>
+  </div>
 </section>

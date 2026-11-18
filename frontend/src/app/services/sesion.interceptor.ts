@@ -5,17 +5,22 @@ import { catchError, throwError } from 'rxjs';
 import { AccesoServicio } from './acceso.servicio';
 
 export const revisarSesion: HttpInterceptorFn = (solicitud, siguiente) => {
-    const servicio = inject(AccesoServicio);
-    const navegador = inject(Router);
-    return siguiente(solicitud).pipe(
-        catchError(error => {
-            if ((solicitud.url.startsWith('/api/curriculums') || solicitud.url.startsWith('/api/usuarios') || solicitud.url.startsWith('/api/fotos') || solicitud.url.startsWith('/api/perfil')) && error instanceof HttpErrorResponse && error.status === 401) {
-                servicio.olvidar();
-                servicio.aviso.set('La sesión venció. Volvé a ingresar.');
-                navegador.navigate(['/acceso']);
-            }
-            return throwError(() => error);
-        })
-    );
-
+  const servicio = inject(AccesoServicio);
+  const navegador = inject(Router);
+  return siguiente(solicitud).pipe(
+    catchError((error) => {
+      if (
+        (solicitud.url.startsWith('/api/curriculums') ||
+          solicitud.url.startsWith('/api/usuarios') ||
+          solicitud.url.startsWith('/api/perfil')) &&
+        error instanceof HttpErrorResponse &&
+        error.status === 401
+      ) {
+        servicio.olvidar();
+        servicio.aviso.set('La sesión venció. Volvé a ingresar.');
+        navegador.navigate(['/acceso']);
+      }
+      return throwError(() => error);
+    }),
+  );
 };

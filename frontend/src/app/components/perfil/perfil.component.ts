@@ -5,9 +5,8 @@ import { AccesoServicio } from '../../services/acceso.servicio';
 
 @Component({
   imports: [ReactiveFormsModule],
-  templateUrl: './perfil.component.html'
+  templateUrl: './perfil.component.html',
 })
-
 export class PerfilComponent {
   private fb = inject(FormBuilder);
   private servicio = inject(PerfilServicio);
@@ -25,7 +24,7 @@ export class PerfilComponent {
     ubicacion: ['', Validators.maxLength(200)],
     linkedin: ['', Validators.maxLength(250)],
     github: ['', Validators.maxLength(250)],
-    portfolio: ['', Validators.maxLength(250)]
+    portfolio: ['', Validators.maxLength(250)],
   });
 
   ngOnInit(): void {
@@ -36,22 +35,22 @@ export class PerfilComponent {
     this.cargando.set(true);
     this.error.set('');
     this.servicio.obtener().subscribe({
-      next: perfil => {
+      next: (perfil) => {
         this.formulario.patchValue(perfil);
         this.email.set(perfil.email);
         this.cargando.set(false);
       },
-      error: error => {
+      error: (error) => {
         this.error.set(error.error?.mensaje || 'No se pudo cargar el perfil.');
         this.cargando.set(false);
-      }
+      },
     });
   }
 
   guardar(): void {
     if (this.cargando() || this.guardando()) return;
-    this.formulario.markAllAsTouched();
     if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
       this.error.set('Revisá los campos del perfil.');
       return;
     }
@@ -60,19 +59,24 @@ export class PerfilComponent {
     this.error.set('');
     this.aviso.set('');
     this.servicio.actualizar(datos).subscribe({
-      next: perfil => {
+      next: (perfil) => {
         this.guardando.set(false);
         this.formulario.patchValue(perfil);
         this.aviso.set('Perfil guardado correctamente.');
-        this.acceso.usuario.update(usuario => usuario ? {
-          ...usuario, nombre: perfil.nombre, apellido: perfil.apellido
-        } : usuario);
+        this.acceso.usuario.update((usuario) =>
+          usuario
+            ? {
+                ...usuario,
+                nombre: perfil.nombre,
+                apellido: perfil.apellido,
+              }
+            : usuario,
+        );
       },
-      error: error => {
+      error: (error) => {
         this.guardando.set(false);
         this.error.set(error.error?.mensaje || 'No se pudo guardar el perfil.');
-      }
+      },
     });
   }
-
 }

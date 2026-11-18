@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  templateUrl: './sobre-nosotros.component.html'
+  imports: [RouterLink],
+  templateUrl: './sobre-nosotros.component.html',
 })
-
 export class SobreNosotrosComponent {}

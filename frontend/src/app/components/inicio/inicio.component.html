@@ -1,6 +1,84 @@
-<section class="text-center py-5">
-  <h1 class="display-5 fw-bold">ArmaTuCV</h1>
-  <p class="lead">Creá, editá y organizá tu currículum en un solo lugar.</p>
-  <a class="btn btn-primary me-2" routerLink="/acceso">Ingresar</a>
-  <a class="btn btn-outline-primary" routerLink="/registro">Crear cuenta</a>
+<section class="row g-4 align-items-center mb-4" aria-labelledby="titulo-inicio">
+  <div class="col-6">
+    <h1 id="titulo-inicio" class="display-5 fw-bold">
+      Creá tu currículum
+      <span class="text-primary">fácilmente</span>
+    </h1>
+    <p class="lead">
+      Organizá tus datos, estudios y experiencia. Creá distintas versiones de tu CV y guardalas como
+      PDF.
+    </p>
+    <div class="d-flex gap-2">
+      @if (acceso.usuario()) {
+        <a class="btn btn-primary" routerLink="/perfil">Mi perfil</a>
+        <a class="btn btn-outline-secondary" routerLink="/curriculums">Mis currículums</a>
+      } @else if (acceso.usuario() === null) {
+        <a class="btn btn-primary" routerLink="/registro">Crear cuenta</a>
+        <a class="btn btn-outline-secondary" routerLink="/acceso">Ingresar</a>
+      } @else {
+        <p class="text-secondary mb-0" role="status">Comprobando sesión...</p>
+      }
+      <a class="btn btn-outline-primary" routerLink="/guia-del-cv">Ver guía y ejemplo</a>
+    </div>
+  </div>
+  <figure class="col-6 mb-0">
+    <div class="card card-body p-4">
+      <h2 class="h3 text-primary mb-1">Juan Pérez</h2>
+      <p class="fw-semibold mb-1">Auxiliar administrativo</p>
+      <p class="small text-secondary border-bottom pb-3">Buenos Aires · CV administrativo</p>
+      <h3 class="h6">Perfil profesional</h3>
+      <p class="small mb-0">
+        Estudiante de Administración con experiencia en pedidos y documentación. Manejo de Excel y
+        atención a consultas.
+      </p>
+    </div>
+    <figcaption class="small text-secondary mt-2">
+      Juan Pérez es un ejemplo con datos ficticios.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="mb-4" aria-labelledby="titulo-pasos">
+  <h2 id="titulo-pasos" class="h4 mb-3">Cómo funciona</h2>
+  <ol class="row g-3 list-unstyled mb-0">
+    <li class="col-4">
+      <article class="card card-body h-100 p-4">
+        <span class="text-primary fw-bold mb-2">01</span>
+        <h3 class="h5">Completá tu perfil</h3>
+        <p class="text-secondary mb-0">
+          Cargá tu nombre y tus datos de contacto. Se utilizan en todos tus currículums.
+        </p>
+      </article>
+    </li>
+    <li class="col-4">
+      <article class="card card-body h-100 p-4">
+        <span class="text-primary fw-bold mb-2">02</span>
+        <h3 class="h5">Armá y guardá tu CV</h3>
+        <p class="text-secondary mb-0">
+          Elegí un puesto y agregá los antecedentes que quieras mostrar. Guardá para conservar los
+          cambios.
+        </p>
+      </article>
+    </li>
+    <li class="col-4">
+      <article class="card card-body h-100 p-4">
+        <span class="text-primary fw-bold mb-2">03</span>
+        <h3 class="h5">Revisá e imprimí</h3>
+        <p class="text-secondary mb-0">
+          Abrí el detalle y elegí Imprimir para guardar como PDF A4 o llevarlo al papel.
+        </p>
+      </article>
+    </li>
+  </ol>
+</section>
+
+<section class="bg-primary-subtle border rounded p-4" aria-labelledby="titulo-funciones">
+  <h2 id="titulo-funciones" class="h4">Tu información, organizada para cada oportunidad</h2>
+  <ul class="mb-0">
+    <li>Creá varios CV y adaptá el contenido de cada uno al puesto que buscás.</li>
+    <li>Consultá, editá o eliminá tus versiones desde Mis CV.</li>
+    <li>
+      Actualizá tus datos personales una sola vez desde Mi perfil: se reflejan en todos tus CV.
+    </li>
+  </ul>
 </section>
