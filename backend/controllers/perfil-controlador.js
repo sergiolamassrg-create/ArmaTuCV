@@ -4,9 +4,7 @@ exports.obtener = async (req, res, next) => {
   try {
     const perfil = await servicio.obtener(res.locals.usuario.id);
     if (!perfil)
-      return res
-        .status(404)
-        .json({ mensaje: "No se encontraron tus datos personales." });
+      return res.status(404).json({ mensaje: 'No se encontraron tus datos personales.' });
     res.json(perfil);
   } catch (error) {
     next(error);
@@ -16,7 +14,10 @@ exports.obtener = async (req, res, next) => {
 exports.actualizar = async (req, res, next) => {
   try {
     const perfil = await servicio.actualizar(req.body, res.locals.usuario.id);
-    if (!perfil) return res.status(404).json({ mensaje: 'No se encontraron tus datos personales.' });
+    if (!perfil)
+      return res.status(404).json({ mensaje: 'No se encontraron tus datos personales.' });
     res.json(perfil);
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 };
