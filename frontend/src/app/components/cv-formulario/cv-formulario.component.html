@@ -1,198 +1,425 @@
 <h1>{{ id ? 'Editar currículum' : 'Crear currículum' }}</h1>
 @if (error()) {
-  <p role="alert">{{ error() }}</p>
+  <p class="alert alert-danger" role="alert">{{ error() }}</p>
 }
 @if (cargando()) {
   <p>Cargando currículum...</p>
 }
-<form class="formulario-cv" [formGroup]="formulario" (ngSubmit)="guardar()">
-  <fieldset [disabled]="cargando() || guardando()">
-    <label>Título del CV <input formControlName="titulo" maxlength="150" /></label>
+<form class="col-10 card card-body p-4" [formGroup]="formulario" (ngSubmit)="guardar()">
+  <fieldset [disabled]="cargando() || guardando() || falloCarga()">
+    <label class="form-label d-block mb-3">
+      Título del CV
+      <input class="form-control mt-1" formControlName="titulo" maxlength="150" />
+    </label>
     @if (formulario.controls.titulo.touched && formulario.controls.titulo.invalid) {
-      <p>Ingresá un título.</p>
+      <p>Ingresá un título de hasta 150 caracteres, no solo espacios.</p>
     }
-    <label>Puesto objetivo <input formControlName="puesto" maxlength="180" /></label>
+    <label class="form-label d-block mb-3">
+      Puesto objetivo
+      <input class="form-control mt-1" formControlName="puesto" maxlength="180" />
+    </label>
     @if (formulario.controls.puesto.touched && formulario.controls.puesto.invalid) {
-      <p>Ingresá un puesto objetivo.</p>
+      <p>Ingresá un puesto de hasta 180 caracteres, no solo espacios.</p>
     }
-    <label>Resumen <textarea formControlName="resumen" maxlength="2000"></textarea></label>
+    <label class="form-label d-block mb-3">
+      Resumen
+      <textarea
+        class="form-control mt-1"
+        rows="3"
+        formControlName="resumen"
+        maxlength="2000"
+      ></textarea>
+    </label>
 
-    <h2>Experiencia laboral</h2>
-    @for (experiencia of datos.experiencias; track $index; let i = $index) {
-      <fieldset>
-        <legend>Experiencia {{ i + 1 }}</legend>
-        <label
-          >Puesto
-          <input #puesto [value]="experiencia.puesto" (input)="experiencia.puesto = puesto.value"
-        /></label>
-        <label
-          >Empresa
-          <input
-            #empresa
-            [value]="experiencia.empresa"
-            (input)="experiencia.empresa = empresa.value"
-        /></label>
-        <label
-          >Fecha inicio
-          <input
-            #inicio
-            type="date"
-            [value]="experiencia.fechaInicio || ''"
-            (change)="experiencia.fechaInicio = inicio.value || null"
-        /></label>
-        <label
-          >Fecha fin
-          <input
-            #fin
-            type="date"
-            [value]="experiencia.fechaFin || ''"
-            (change)="experiencia.fechaFin = fin.value || null"
-        /></label>
-        <label
-          >Descripción
-          <textarea
-            #descripcion
-            [value]="experiencia.descripcion"
-            (input)="experiencia.descripcion = descripcion.value"
-          ></textarea>
-        </label>
-        <button type="button" (click)="datos.experiencias.splice(i, 1)">Quitar experiencia</button>
-      </fieldset>
-    } @empty {
-      <p>Sin experiencias cargadas.</p>
-    }
-    <button type="button" (click)="agregarExperiencia()">Agregar experiencia</button>
-
-    <h2>Educación</h2>
-    @for (educacion of datos.educaciones; track $index; let i = $index) {
-      <fieldset>
-        <legend>Estudio {{ i + 1 }}</legend>
-        <label
-          >Título
-          <input #titulo [value]="educacion.titulo" (input)="educacion.titulo = titulo.value"
-        /></label>
-        <label
-          >Institución
-          <input
-            #institucion
-            [value]="educacion.institucion"
-            (input)="educacion.institucion = institucion.value"
-        /></label>
-        <label
-          >Año inicio
-          <input
-            #inicio
-            type="number"
-            [value]="educacion.anioInicio ?? ''"
-            (input)="educacion.anioInicio = inicio.value ? +inicio.value : null"
-        /></label>
-        <label
-          >Año fin
-          <input
-            #fin
-            type="number"
-            [value]="educacion.anioFin ?? ''"
-            (input)="educacion.anioFin = fin.value ? +fin.value : null"
-        /></label>
-        <label
-          >Estado
-          <input #estado [value]="educacion.estado" (input)="educacion.estado = estado.value"
-        /></label>
-        <button type="button" (click)="datos.educaciones.splice(i, 1)">Quitar estudio</button>
-      </fieldset>
-    } @empty {
-      <p>Sin estudios cargados.</p>
-    }
-    <button type="button" (click)="agregarEducacion()">Agregar estudio</button>
-
-    <h2>Habilidades</h2>
-    @for (habilidad of datos.habilidades; track $index; let i = $index) {
-      <div>
-        <label
-          >Nombre
-          <input #nombre [value]="habilidad.nombre" (input)="habilidad.nombre = nombre.value"
-        /></label>
-        <label
-          >Tipo
-          <select
-            #tipo
-            [value]="habilidad.tipo"
-            (change)="cambiarTipoHabilidad(habilidad, tipo.value)"
+    <h2 class="h4 mt-4 mb-3">Experiencia laboral</h2>
+    <div formArrayName="experiencias">
+      @for (experiencia of experiencias.controls; track experiencia; let i = $index) {
+        <fieldset [formGroupName]="i" class="border rounded p-3 mb-3">
+          <legend class="h6 mb-0">Experiencia {{ i + 1 }}</legend>
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Puesto
+              <input
+                class="form-control mt-1"
+                formControlName="puesto"
+                [class.is-invalid]="
+                  experiencia.controls.puesto.touched && experiencia.controls.puesto.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Empresa
+              <input
+                class="form-control mt-1"
+                formControlName="empresa"
+                [class.is-invalid]="
+                  experiencia.controls.empresa.touched && experiencia.controls.empresa.invalid
+                "
+              />
+            </label>
+          </div>
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Fecha inicio
+              <input
+                class="form-control mt-1"
+                type="date"
+                formControlName="fechaInicio"
+                [class.is-invalid]="
+                  experiencia.controls.fechaInicio.touched &&
+                  experiencia.controls.fechaInicio.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Fecha fin
+              <input
+                class="form-control mt-1"
+                type="date"
+                formControlName="fechaFin"
+                [class.is-invalid]="
+                  experiencia.controls.fechaFin.touched && experiencia.controls.fechaFin.invalid
+                "
+              />
+            </label>
+          </div>
+          <label class="form-label d-block mb-3">
+            Descripción
+            <textarea
+              class="form-control mt-1"
+              rows="3"
+              formControlName="descripcion"
+              [class.is-invalid]="
+                experiencia.controls.descripcion.touched && experiencia.controls.descripcion.invalid
+              "
+            ></textarea>
+          </label>
+          @if (experiencia.touched && experiencia.invalid) {
+            <p class="text-danger small" role="alert">
+              Completá puesto y empresa (hasta 150 caracteres), revisá las fechas y la descripción
+              (hasta 2000).
+            </p>
+          }
+          @if (experiencia.touched && experiencia.hasError('fechasDesordenadas')) {
+            <p class="text-danger small">El fin no puede ser anterior al inicio.</p>
+          }
+          <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            (click)="quitar(experiencias, i)"
           >
-            <option value="TECNICA">Técnica</option>
-            <option value="BLANDA">Blanda</option>
-          </select>
-        </label>
-        <button type="button" (click)="datos.habilidades.splice(i, 1)">Quitar</button>
-      </div>
-    } @empty {
-      <p>Sin habilidades cargadas.</p>
-    }
-    <button type="button" (click)="agregarHabilidad()">Agregar habilidad</button>
-
-    <h2>Idiomas</h2>
-    @for (idioma of datos.idiomas; track $index; let i = $index) {
-      <div>
-        <label
-          >Idioma <input #nombre [value]="idioma.idioma" (input)="idioma.idioma = nombre.value"
-        /></label>
-        <label
-          >Nivel <input #nivel [value]="idioma.nivel" (input)="idioma.nivel = nivel.value"
-        /></label>
-        <button type="button" (click)="datos.idiomas.splice(i, 1)">Quitar</button>
-      </div>
-    } @empty {
-      <p>Sin idiomas cargados.</p>
-    }
-    <button type="button" (click)="agregarIdioma()">Agregar idioma</button>
-
-    <h2>Complementos</h2>
-    @for (complemento of datos.complementos; track $index; let i = $index) {
-      <fieldset>
-        <legend>Complemento {{ i + 1 }}</legend>
-        <label
-          >Tipo
-          <select
-            #tipo
-            [value]="complemento.tipo"
-            (change)="cambiarTipoComplemento(complemento, tipo.value)"
-          >
-            <option value="CURSO">Curso</option>
-            <option value="CERTIFICACION">Certificación</option>
-            <option value="PROYECTO">Proyecto</option>
-          </select>
-        </label>
-        <label
-          >Título
-          <input #titulo [value]="complemento.titulo" (input)="complemento.titulo = titulo.value"
-        /></label>
-        <label
-          >Descripción
-          <textarea
-            #descripcion
-            [value]="complemento.descripcion"
-            (input)="complemento.descripcion = descripcion.value"
-          ></textarea>
-        </label>
-        <label
-          >Año
-          <input
-            #anio
-            type="number"
-            [value]="complemento.anio ?? ''"
-            (input)="complemento.anio = anio.value ? +anio.value : null"
-        /></label>
-        <button type="button" (click)="datos.complementos.splice(i, 1)">Quitar</button>
-      </fieldset>
-    } @empty {
-      <p>Sin complementos cargados.</p>
-    }
-    <button type="button" (click)="agregarComplemento()">Agregar complemento</button>
-
-    <p>La foto y las opciones del PDF se administran en el detalle del CV.</p>
-    <button type="submit" [disabled]="guardando() || cargando()">
-      {{ guardando() ? 'Guardando...' : 'Guardar CV' }}
+            Quitar experiencia
+          </button>
+        </fieldset>
+      } @empty {
+        <p>Sin experiencias cargadas.</p>
+      }
+      @if (experiencias.hasError('maxlength')) {
+        <p class="text-danger small">Cada sección admite hasta 20 registros.</p>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      type="button"
+      (click)="agregarExperiencia()"
+      [disabled]="experiencias.length >= 20"
+    >
+      Agregar experiencia
     </button>
-    <a routerLink="/curriculums">Cancelar</a>
+
+    <h2 class="h4 mt-4 mb-3">Educación</h2>
+    <div formArrayName="educaciones">
+      @for (educacion of educaciones.controls; track educacion; let i = $index) {
+        <fieldset [formGroupName]="i" class="border rounded p-3 mb-3">
+          <legend class="h6 mb-0">Estudio {{ i + 1 }}</legend>
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Título
+              <input
+                class="form-control mt-1"
+                formControlName="titulo"
+                [class.is-invalid]="
+                  educacion.controls.titulo.touched && educacion.controls.titulo.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Institución
+              <input
+                class="form-control mt-1"
+                formControlName="institucion"
+                [class.is-invalid]="
+                  educacion.controls.institucion.touched && educacion.controls.institucion.invalid
+                "
+              />
+            </label>
+          </div>
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Año inicio
+              <input
+                class="form-control mt-1"
+                type="number"
+                formControlName="anioInicio"
+                [class.is-invalid]="
+                  educacion.controls.anioInicio.touched && educacion.controls.anioInicio.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Año fin
+              <input
+                class="form-control mt-1"
+                type="number"
+                formControlName="anioFin"
+                [class.is-invalid]="
+                  educacion.controls.anioFin.touched && educacion.controls.anioFin.invalid
+                "
+              />
+            </label>
+          </div>
+          <label class="form-label d-block mb-3">
+            Estado
+            <input
+              class="form-control mt-1"
+              formControlName="estado"
+              [class.is-invalid]="
+                educacion.controls.estado.touched && educacion.controls.estado.invalid
+              "
+            />
+          </label>
+          @if (educacion.touched && educacion.invalid) {
+            <p class="text-danger small" role="alert">
+              Completá título e institución (hasta 200 caracteres). Usá años enteros entre 1900 y
+              2100 y un estado de hasta 40 caracteres.
+            </p>
+          }
+          @if (educacion.touched && educacion.hasError('aniosDesordenados')) {
+            <p class="text-danger small">El fin no puede ser anterior al inicio.</p>
+          }
+          <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            (click)="quitar(educaciones, i)"
+          >
+            Quitar estudio
+          </button>
+        </fieldset>
+      } @empty {
+        <p>Sin estudios cargados.</p>
+      }
+      @if (educaciones.hasError('maxlength')) {
+        <p class="text-danger small">Cada sección admite hasta 20 registros.</p>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      type="button"
+      (click)="agregarEducacion()"
+      [disabled]="educaciones.length >= 20"
+    >
+      Agregar estudio
+    </button>
+
+    <h2 class="h4 mt-4 mb-3">Habilidades</h2>
+    <div formArrayName="habilidades">
+      @for (habilidad of habilidades.controls; track habilidad; let i = $index) {
+        <div [formGroupName]="i" class="border rounded p-3 mb-3">
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Nombre
+              <input
+                class="form-control mt-1"
+                formControlName="nombre"
+                [class.is-invalid]="
+                  habilidad.controls.nombre.touched && habilidad.controls.nombre.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Tipo
+              <select
+                class="form-select mt-1"
+                formControlName="tipo"
+                [class.is-invalid]="
+                  habilidad.controls.tipo.touched && habilidad.controls.tipo.invalid
+                "
+              >
+                <option value="TECNICA">Técnica</option>
+                <option value="BLANDA">Blanda</option>
+              </select>
+            </label>
+          </div>
+          @if (habilidad.touched && habilidad.invalid) {
+            <p class="text-danger small" role="alert">
+              Ingresá una habilidad de hasta 120 caracteres y elegí su tipo.
+            </p>
+          }
+          <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            (click)="quitar(habilidades, i)"
+          >
+            Quitar
+          </button>
+        </div>
+      } @empty {
+        <p>Sin habilidades cargadas.</p>
+      }
+      @if (habilidades.hasError('maxlength')) {
+        <p class="text-danger small">Cada sección admite hasta 20 registros.</p>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      type="button"
+      (click)="agregarHabilidad()"
+      [disabled]="habilidades.length >= 20"
+    >
+      Agregar habilidad
+    </button>
+
+    <h2 class="h4 mt-4 mb-3">Idiomas</h2>
+    <div formArrayName="idiomas">
+      @for (idioma of idiomas.controls; track idioma; let i = $index) {
+        <div [formGroupName]="i" class="border rounded p-3 mb-3">
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Idioma
+              <input
+                class="form-control mt-1"
+                formControlName="idioma"
+                [class.is-invalid]="
+                  idioma.controls.idioma.touched && idioma.controls.idioma.invalid
+                "
+              />
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Nivel
+              <input
+                class="form-control mt-1"
+                formControlName="nivel"
+                [class.is-invalid]="idioma.controls.nivel.touched && idioma.controls.nivel.invalid"
+              />
+            </label>
+          </div>
+          @if (idioma.touched && idioma.invalid) {
+            <p class="text-danger small" role="alert">
+              Ingresá el idioma (hasta 80 caracteres) y el nivel (hasta 60).
+            </p>
+          }
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="quitar(idiomas, i)">
+            Quitar
+          </button>
+        </div>
+      } @empty {
+        <p>Sin idiomas cargados.</p>
+      }
+      @if (idiomas.hasError('maxlength')) {
+        <p class="text-danger small">Cada sección admite hasta 20 registros.</p>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      type="button"
+      (click)="agregarIdioma()"
+      [disabled]="idiomas.length >= 20"
+    >
+      Agregar idioma
+    </button>
+
+    <h2 class="h4 mt-4 mb-3">Complementos</h2>
+    <div formArrayName="complementos">
+      @for (complemento of complementos.controls; track complemento; let i = $index) {
+        <fieldset [formGroupName]="i" class="border rounded p-3 mb-3">
+          <legend class="h6 mb-0">Complemento {{ i + 1 }}</legend>
+          <div class="row g-3 mb-3">
+            <label class="form-label d-block mb-0 col-6">
+              Tipo
+              <select
+                class="form-select mt-1"
+                formControlName="tipo"
+                [class.is-invalid]="
+                  complemento.controls.tipo.touched && complemento.controls.tipo.invalid
+                "
+              >
+                <option value="CURSO">Curso</option>
+                <option value="CERTIFICACION">Certificación</option>
+                <option value="PROYECTO">Proyecto</option>
+              </select>
+            </label>
+            <label class="form-label d-block mb-0 col-6">
+              Título
+              <input
+                class="form-control mt-1"
+                formControlName="titulo"
+                [class.is-invalid]="
+                  complemento.controls.titulo.touched && complemento.controls.titulo.invalid
+                "
+              />
+            </label>
+          </div>
+          <label class="form-label d-block mb-3">
+            Descripción
+            <textarea
+              class="form-control mt-1"
+              rows="3"
+              formControlName="descripcion"
+              [class.is-invalid]="
+                complemento.controls.descripcion.touched && complemento.controls.descripcion.invalid
+              "
+            ></textarea>
+          </label>
+          <label class="form-label d-block mb-3">
+            Año
+            <input
+              class="form-control mt-1"
+              type="number"
+              formControlName="anio"
+              [class.is-invalid]="
+                complemento.controls.anio.touched && complemento.controls.anio.invalid
+              "
+            />
+          </label>
+          @if (complemento.touched && complemento.invalid) {
+            <p class="text-danger small" role="alert">
+              Revisá el tipo, el título (hasta 200 caracteres), la descripción (hasta 2000) y el año
+              entero entre 1900 y 2100.
+            </p>
+          }
+          <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            (click)="quitar(complementos, i)"
+          >
+            Quitar
+          </button>
+        </fieldset>
+      } @empty {
+        <p>Sin complementos cargados.</p>
+      }
+      @if (complementos.hasError('maxlength')) {
+        <p class="text-danger small">Cada sección admite hasta 20 registros.</p>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      type="button"
+      (click)="agregarComplemento()"
+      [disabled]="complementos.length >= 20"
+    >
+      Agregar complemento
+    </button>
+
+    <div class="d-flex flex-wrap gap-2 border-top pt-3 mt-4">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="guardando() || cargando() || falloCarga()"
+      >
+        {{ guardando() ? 'Guardando...' : 'Guardar CV' }}
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/curriculums">Cancelar</a>
+    </div>
   </fieldset>
 </form>

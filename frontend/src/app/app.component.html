@@ -1,26 +1,9 @@
-<div class="pagina-completa">
-  <header class="bg-dark text-white py-3 no-imprimir">
-    <nav class="container d-flex flex-wrap align-items-center gap-3" aria-label="Navegación principal">
-      <a class="text-white fw-bold text-decoration-none" routerLink="/">ArmaTuCV</a>
-      <a class="text-white" routerLink="/">Inicio</a>
-      @if (acceso.usuario(); as usuario) {
-      <a class="text-white" routerLink="/curriculums">Mis CV</a>
-      <a class="text-white" routerLink="/fotos">Fotografías</a>
-      <a class="text-white" routerLink="/perfil">Mi perfil</a>
-      @if (usuario.rol === 'administrador') {
-      <a class="text-white" routerLink="/usuarios">Usuarios</a>
-      }
-      <button class="btn btn-sm btn-outline-light ms-auto" type="button" (click)="salir()">Salir</button>
-      } @else if (acceso.usuario() === null) {
-      <a class="text-white" routerLink="/acceso">Ingresar</a>
-      <a class="text-white" routerLink="/registro">Crear cuenta</a>
-      }
-      <a class="text-white" routerLink="/sobre-nosotros">Sobre nosotros</a>
-      <a class="text-white" routerLink="/contacto">Contacto</a>
-    </nav>
-  </header>
-  <main class="container py-4 contenido-principal">
-    @if (error()) { <p class="alert alert-danger no-imprimir" role="alert">{{ error() }}</p> }
+<div class="pagina-completa d-flex flex-column d-print-block">
+  <app-cabecera class="no-imprimir" />
+  <main class="container flex-grow-1 contenido-principal">
+    @if (error()) {
+      <p class="alert alert-danger no-imprimir" role="alert">{{ error() }}</p>
+    }
     <router-outlet />
   </main>
   <app-pie-pagina class="no-imprimir" />

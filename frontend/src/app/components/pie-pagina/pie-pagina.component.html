@@ -1,9 +1,13 @@
-<footer class="pie-pagina py-3 mt-auto">
-  <div class="container text-center">
-    <p class="mb-1"><strong>ArmaTuCV</strong> — Proyecto académico de estudiantes del IFTS N.º 11.</p>
-    <p class="mb-1 small">Tecnicatura Superior en Desarrollo de Software. Proyecto estudiantil, no sitio oficial del
-      instituto.</p>
-    <p class="mb-0 small">© {{ anio }} ArmaTuCV · Derechos reservados · <a routerLink="/sobre-nosotros">Sobre
-        nosotros</a> · <a routerLink="/contacto">Contacto</a> · <a routerLink="/aviso-academico">Aviso académico</a></p>
+<footer class="border-top bg-white py-3">
+  <div class="container d-flex align-items-center justify-content-between gap-4">
+    <div>
+      <strong>ArmaTuCV</strong>
+      <p class="small text-secondary mb-0">Proyecto académico · IFTS N.º 11</p>
+    </div>
+    <nav class="d-flex gap-3 small" aria-label="Navegación del pie de página">
+      <a class="text-secondary" routerLink="/guia-del-cv">Guía del CV</a>
+      <a class="text-secondary" routerLink="/sobre-nosotros">Equipo y contacto</a>
+    </nav>
+    <p class="small text-secondary mb-0">© {{ anio }} ArmaTuCV</p>
   </div>
 </footer>

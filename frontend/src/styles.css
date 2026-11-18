@@ -1,94 +1,34 @@
-body {
-  background: #f8f9fa;
-}
-
-.pagina-completa {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.contenido-principal {
-  flex: 1;
-}
-
-.formulario-simple {
-  max-width: 650px;
-}
-
-.formulario-cv {
-  max-width: 920px;
-}
-
-.formulario-cv label {
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.formulario-cv label > input,
-.formulario-cv label > select,
-.formulario-cv label > textarea {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  margin-top: 0.35rem;
-}
-
-.formulario-cv fieldset fieldset {
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.formulario-cv h2 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.contenido-principal textarea {
-  min-height: 80px;
-  max-width: 100%;
-  field-sizing: content;
-  resize: vertical;
-}
-
 @media screen {
-  .contenido-principal button,
-  .contenido-principal .btn,
-  .contenido-principal input[type="submit"],
-  .contenido-principal input[type="button"] {
-    margin: 0.25rem 0.5rem 0.25rem 0;
+  body {
+    background: #f8f9fa;
   }
 
-  .contenido-principal form {
-    margin-bottom: 1rem;
+  .pagina-completa {
+    min-height: 100vh;
   }
-}
 
-.pie-pagina {
-  background: #e9ecef;
-  color: #343a40;
+  .contenido-principal {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .acciones-cv {
+    display: flex;
+  }
 }
 
 @media print {
   body {
-    background: white !important;
+    background: white;
   }
 
   .no-imprimir,
   .acciones-cv {
-    display: none !important;
+    display: none;
   }
 
   .contenido-principal {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: none !important;
-  }
-
-  .pagina-completa {
-    display: block;
-    min-height: auto;
+    padding: 0;
+    max-width: none;
   }
 }

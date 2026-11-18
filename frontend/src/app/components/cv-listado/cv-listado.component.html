@@ -1,14 +1,34 @@
-<h1>Mis currículums</h1>
-<a routerLink="/curriculums/nuevo">Crear CV</a>
-@if (error()) { <p role="alert">{{ error() }}</p> }
-@if (aviso()) { <p role="status">{{ aviso() }}</p> }
-<ul>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <h1 class="mb-0">Mis currículums</h1>
+  <a class="btn btn-primary" routerLink="/curriculums/nuevo">Crear CV</a>
+</div>
+@if (error()) {
+  <p class="alert alert-danger" role="alert">{{ error() }}</p>
+}
+@if (aviso()) {
+  <p class="alert alert-success" role="status">{{ aviso() }}</p>
+}
+<ul class="list-group">
   @for (cv of cvs(); track cv.id) {
-  <li>
-    {{ cv.titulo }} — {{ cv.nombreCompleto }}
-    <a [routerLink]="['/curriculums', cv.id]">Ver</a>
-    <a [routerLink]="['/curriculums', cv.id, 'editar']">Editar</a>
-    <button type="button" (click)="eliminar(cv)">Eliminar</button>
-  </li>
-  } @empty { <li>Todavía no tenés currículums.</li> }
+    <li class="list-group-item d-flex flex-row align-items-center justify-content-between gap-3">
+      <div class="text-break">
+        <strong class="d-block">{{ cv.titulo }}</strong>
+        <span class="text-secondary">{{ cv.nombreCompleto }}</span>
+      </div>
+      <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+        <a class="btn btn-sm btn-outline-primary" [routerLink]="['/curriculums', cv.id]">Ver</a>
+        <a
+          class="btn btn-sm btn-outline-secondary"
+          [routerLink]="['/curriculums', cv.id, 'editar']"
+        >
+          Editar
+        </a>
+        <button class="btn btn-sm btn-outline-danger" type="button" (click)="eliminar(cv)">
+          Eliminar
+        </button>
+      </div>
+    </li>
+  } @empty {
+    <li class="list-group-item text-secondary">Todavía no tenés currículums.</li>
+  }
 </ul>

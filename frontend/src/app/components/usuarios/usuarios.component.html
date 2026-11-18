@@ -1,53 +1,125 @@
 <section>
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <h1 class="mb-0">Usuarios ({{ total() }})</h1>
-    <a class="btn btn-primary" routerLink="/usuarios/nuevo">Crear usuario</a>
+    <h1 class="mb-0">Usuarios</h1>
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="cargar()"
+        [disabled]="cargando()"
+      >
+        {{ cargando() ? 'Actualizando...' : 'Actualizar' }}
+      </button>
+      <a class="btn btn-primary" routerLink="/usuarios/nuevo">Crear usuario</a>
+    </div>
   </div>
-  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
-  @if (aviso()) { <div class="alert alert-success" role="status">{{ aviso() }}</div> }
-  <div class="table-responsive">
-    <table class="table table-striped align-middle">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Correo</th>
-          <th>Rol</th>
-          <th>CV</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (u of usuarios(); track u.id) {
-        <tr>
-          <td>{{ u.nombre }} {{ u.apellido }}</td>
-          <td>{{ u.email }}</td>
-          <td>{{ u.rol }}</td>
-          <td>{{ u.cantidadCV }}</td>
-          <td>
-            <div class="d-flex flex-wrap gap-1">
-              <a class="btn btn-sm btn-outline-primary" [routerLink]="['/usuarios', u.id, 'editar']">Editar</a>
-              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="verCurriculums(u)">Ver CV</button>
-              @if (u.activo) {
-              <button class="btn btn-sm btn-outline-danger" type="button" (click)="desactivar(u)">Desactivar</button>
-              } @else {
-              <span class="text-secondary small">Inactivo (reactivar desde Editar)</span>
-              }
-            </div>
-          </td>
-        </tr>
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  }
+  @if (aviso()) {
+    <div class="alert alert-success" role="status">{{ aviso() }}</div>
+  }
+  <section class="row g-3 mb-4" aria-label="Resumen de usuarios">
+    <div class="col-3">
+      <div class="card card-body h-100">
+        <h2 class="h6 text-secondary">Usuarios creados</h2>
+        <p class="h3 mb-0">{{ datosCargados() ? total() : '—' }}</p>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card card-body h-100">
+        <h2 class="h6 text-secondary">Usuarios activos</h2>
+        <p class="h3 text-success mb-0">{{ datosCargados() ? activos() : '—' }}</p>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card card-body h-100">
+        <h2 class="h6 text-secondary">Usuarios desactivados</h2>
+        <p class="h3 text-secondary mb-0">{{ datosCargados() ? desactivados() : '—' }}</p>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card card-body h-100">
+        <h2 class="h6 text-secondary">CV creados</h2>
+        <p class="h3 text-primary mb-0">{{ datosCargados() ? totalCurriculums() : '—' }}</p>
+      </div>
+    </div>
+  </section>
+  @if (cargando()) {
+    <p class="text-secondary" role="status">Cargando usuarios...</p>
+  }
+  @if (datosCargados()) {
+    <div class="table-responsive">
+      <table class="table table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>CV</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of usuarios(); track u.id) {
+            <tr>
+              <td>{{ u.nombre }} {{ u.apellido }}</td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.rol }}</td>
+              <td>{{ u.cantidadCV }}</td>
+              <td>
+                <div class="d-flex flex-wrap gap-1">
+                  <a
+                    class="btn btn-sm btn-outline-primary"
+                    [routerLink]="['/usuarios', u.id, 'editar']"
+                  >
+                    Editar usuario
+                  </a>
+                  <button
+                    class="btn btn-sm btn-outline-secondary"
+                    type="button"
+                    (click)="verCurriculums(u)"
+                  >
+                    Ver CV
+                  </button>
+                  @if (u.activo) {
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      type="button"
+                      (click)="desactivar(u)"
+                    >
+                      Desactivar usuario
+                    </button>
+                  } @else {
+                    <span class="text-secondary small">
+                      Inactivo (reactivar desde Editar usuario)
+                    </span>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">No hay usuarios.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (seleccionado(); as u) {
+      <h2 class="h4 mt-4">CV de {{ u.nombre }}</h2>
+      <ul class="list-group">
+        @for (cv of curriculums(); track cv.id) {
+          <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+            <span>{{ cv.titulo }}</span>
+            <a class="btn btn-sm btn-outline-primary" [routerLink]="['/curriculums', cv.id]">
+              Ver
+            </a>
+          </li>
         } @empty {
-        <tr>
-          <td colspan="5">No hay usuarios.</td>
-        </tr>
+          <li class="list-group-item">Sin currículums.</li>
         }
-      </tbody>
-    </table>
-  </div>
-  @if (seleccionado(); as u) {
-  <h2 class="h4 mt-4">CV de {{ u.nombre }}</h2>
-  <ul class="list-group">
-    @for (cv of curriculums(); track cv.id) { <li class="list-group-item">{{ cv.titulo }}</li> }
-    @empty { <li class="list-group-item">Sin currículums.</li> }
-  </ul>
+      </ul>
+    }
   }
 </section>

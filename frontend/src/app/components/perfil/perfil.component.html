@@ -1,39 +1,124 @@
-<section class="formulario-simple">
+<section class="col-7 card card-body p-4">
   <h1>Mi perfil</h1>
   <p class="text-secondary">Estos datos personales también aparecen en tus currículums.</p>
-  @if (error()) { <div class="alert alert-danger" role="alert">{{ error() }}</div> }
-  @if (aviso()) { <div class="alert alert-success" role="status">{{ aviso() }}</div> }
-  @if (cargando()) { <p>Cargando perfil...</p> }
-  @if (email()) { <p>Correo de tu cuenta: <strong>{{ email() }}</strong></p> }
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">{{ error() }}</div>
+  }
+  @if (aviso()) {
+    <div class="alert alert-success" role="status">{{ aviso() }}</div>
+  }
+  @if (cargando()) {
+    <p>Cargando perfil...</p>
+  }
+  @if (email()) {
+    <p>
+      Correo de tu cuenta:
+      <strong>{{ email() }}</strong>
+    </p>
+  }
   <form [formGroup]="formulario" (ngSubmit)="guardar()">
     <fieldset [disabled]="cargando() || guardando()">
-      <div class="mb-3"><label class="form-label" for="perfil-nombre">Nombre</label>
-        <input class="form-control" id="perfil-nombre" formControlName="nombre" maxlength="100"
-          autocomplete="given-name">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-nombre">Nombre</label>
+        <input
+          class="form-control"
+          id="perfil-nombre"
+          formControlName="nombre"
+          maxlength="100"
+          autocomplete="given-name"
+        />
+        @if (formulario.controls.nombre.touched && formulario.controls.nombre.hasError('required')) {
+          <p class="text-danger small">El nombre es obligatorio.</p>
+        }
+        @if (formulario.controls.nombre.touched && formulario.controls.nombre.hasError('maxlength')) {
+          <p class="text-danger small">El nombre admite hasta 100 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-apellido">Apellido</label>
-        <input class="form-control" id="perfil-apellido" formControlName="apellido" maxlength="100"
-          autocomplete="family-name">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-apellido">Apellido</label>
+        <input
+          class="form-control"
+          id="perfil-apellido"
+          formControlName="apellido"
+          maxlength="100"
+          autocomplete="family-name"
+        />
+        @if (formulario.controls.apellido.touched && formulario.controls.apellido.hasError('required')) {
+          <p class="text-danger small">El apellido es obligatorio.</p>
+        }
+        @if (formulario.controls.apellido.touched && formulario.controls.apellido.hasError('maxlength')) {
+          <p class="text-danger small">El apellido admite hasta 100 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-telefono">Teléfono</label>
-        <input class="form-control" id="perfil-telefono" formControlName="telefono" maxlength="40" autocomplete="tel">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-telefono">Teléfono</label>
+        <input
+          class="form-control"
+          id="perfil-telefono"
+          formControlName="telefono"
+          maxlength="40"
+          autocomplete="tel"
+        />
+        @if (formulario.controls.telefono.touched && formulario.controls.telefono.hasError('maxlength')) {
+          <p class="text-danger small">El teléfono admite hasta 40 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-ubicacion">Ubicación</label>
-        <input class="form-control" id="perfil-ubicacion" formControlName="ubicacion" maxlength="200">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-ubicacion">Ubicación</label>
+        <input
+          class="form-control"
+          id="perfil-ubicacion"
+          formControlName="ubicacion"
+          maxlength="200"
+        />
+        @if (formulario.controls.ubicacion.touched && formulario.controls.ubicacion.hasError('maxlength')) {
+          <p class="text-danger small">La ubicación admite hasta 200 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-linkedin">LinkedIn (URL completa)</label>
-        <input class="form-control" id="perfil-linkedin" formControlName="linkedin" maxlength="250"
-          placeholder="https://...">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-linkedin">LinkedIn (URL completa)</label>
+        <input
+          class="form-control"
+          id="perfil-linkedin"
+          formControlName="linkedin"
+          maxlength="250"
+          placeholder="https://..."
+        />
+        @if (formulario.controls.linkedin.touched && formulario.controls.linkedin.hasError('maxlength')) {
+          <p class="text-danger small">LinkedIn admite hasta 250 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-github">GitHub (URL completa)</label>
-        <input class="form-control" id="perfil-github" formControlName="github" maxlength="250"
-          placeholder="https://...">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-github">GitHub (URL completa)</label>
+        <input
+          class="form-control"
+          id="perfil-github"
+          formControlName="github"
+          maxlength="250"
+          placeholder="https://..."
+        />
+        @if (formulario.controls.github.touched && formulario.controls.github.hasError('maxlength')) {
+          <p class="text-danger small">GitHub admite hasta 250 caracteres.</p>
+        }
       </div>
-      <div class="mb-3"><label class="form-label" for="perfil-portfolio">Portfolio (URL completa)</label>
-        <input class="form-control" id="perfil-portfolio" formControlName="portfolio" maxlength="250"
-          placeholder="https://...">
+      <div class="mb-3">
+        <label class="form-label" for="perfil-portfolio">Portfolio (URL completa)</label>
+        <input
+          class="form-control"
+          id="perfil-portfolio"
+          formControlName="portfolio"
+          maxlength="250"
+          placeholder="https://..."
+        />
+        @if (formulario.controls.portfolio.touched && formulario.controls.portfolio.hasError('maxlength')) {
+          <p class="text-danger small">El portfolio admite hasta 250 caracteres.</p>
+        }
       </div>
-      <button class="btn btn-primary" type="submit" [disabled]="cargando() || guardando()">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="cargando() || guardando() || formulario.invalid"
+      >
         {{ guardando() ? 'Guardando...' : 'Guardar perfil' }}
       </button>
     </fieldset>

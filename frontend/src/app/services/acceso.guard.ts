@@ -4,22 +4,33 @@ import { catchError, map, of } from 'rxjs';
 import { AccesoServicio } from './acceso.servicio';
 
 export const controlarAcceso: CanActivateFn = (ruta, estado) => {
-    const servicio = inject(AccesoServicio);
-    const navegador = inject(Router);
-    const ingreso = navegador.createUrlTree(['/acceso'], { queryParams: { returnUrl: estado.url } });
+  const servicio = inject(AccesoServicio);
+  const navegador = inject(Router);
+  const ingreso = navegador.createUrlTree(['/acceso'], { queryParams: { returnUrl: estado.url } });
 
-    return servicio.comprobar().pipe(
-        map(usuario => {
-            if (!usuario) return ingreso;
-            if (ruta.data['soloAdministrador'] && usuario.rol !== 'administrador') {
-                return navegador.createUrlTree(['/curriculums']);
-            }
-            return true;
-        }),
-        catchError(error => {
-            servicio.aviso.set(servicio.mensaje(error));
-            return of(ingreso);
-        })
-    );
+  return servicio.comprobar().pipe(
+    map((usuario) => {
+      if (!usuario) return ingreso;
+      if (ruta.data['soloAdministrador'] && usuario.rol !== 'administrador') {
+        return navegador.createUrlTree(['/curriculums']);
+      }
+      return true;
+    }),
+    catchError((error) => {
+      servicio.aviso.set(servicio.mensaje(error));
+      return of(ingreso);
+    }),
+  );
+};
 
+export const soloVisitantes: CanActivateFn = () => {
+  const servicio = inject(AccesoServicio);
+  const navegador = inject(Router);
+  return servicio.comprobar().pipe(
+    map((usuario) => (usuario ? navegador.createUrlTree(['/perfil']) : true)),
+    catchError((error) => {
+      servicio.aviso.set(servicio.mensaje(error));
+      return of(true);
+    }),
+  );
 };

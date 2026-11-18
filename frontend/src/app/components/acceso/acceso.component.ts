@@ -6,9 +6,8 @@ import { Observable } from 'rxjs';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './acceso.component.html'
+  templateUrl: './acceso.component.html',
 })
-
 export class AccesoComponent {
   acceso = inject(AccesoServicio);
   private ruta = inject(ActivatedRoute);
@@ -18,17 +17,22 @@ export class AccesoComponent {
   error = signal('');
   pendiente = signal(false);
   formulario = this.fb.nonNullable.group({
-    nombre: [''],
-    apellido: [''],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
-    repetirClave: ['']
+    nombre: ['', this.registro ? [Validators.required, Validators.maxLength(100)] : []],
+    apellido: ['', this.registro ? [Validators.required, Validators.maxLength(100)] : []],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+    password: [
+      '',
+      this.registro
+        ? [Validators.required, Validators.minLength(12), Validators.maxLength(128)]
+        : [Validators.required],
+    ],
+    repetirClave: ['', this.registro ? [Validators.required] : []],
   });
 
   enviar(): void {
     if (this.pendiente()) return;
-    this.formulario.markAllAsTouched();
     if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
       this.error.set('Completá correo y contraseña.');
       return;
     }
@@ -38,8 +42,15 @@ export class AccesoComponent {
         this.error.set('Completá nombre y apellido.');
         return;
       }
-      if (datos.password.length < 12 || datos.password.length > 128 || datos.password !== datos.repetirClave) {
-        this.error.set('La contraseña debe tener entre 12 y 128 caracteres y coincidir con la repetición.');
+      if (
+        !datos.password.trim() ||
+        datos.password.length < 12 ||
+        datos.password.length > 128 ||
+        datos.password !== datos.repetirClave
+      ) {
+        this.error.set(
+          'La contraseña debe tener entre 12 y 128 caracteres y coincidir con la repetición.',
+        );
         return;
       }
     }
@@ -51,25 +62,33 @@ export class AccesoComponent {
     peticion.subscribe({
       next: () => {
         this.pendiente.set(false);
-        this.formulario.reset({ nombre: '', apellido: '', email: '', password: '', repetirClave: '' });
+        this.formulario.reset({
+          nombre: '',
+          apellido: '',
+          email: '',
+          password: '',
+          repetirClave: '',
+        });
         if (this.registro) {
           this.acceso.aviso.set('Cuenta creada. Ahora ingresá con tu correo y contraseña.');
           this.navegador.navigate(['/acceso']);
         } else {
-          let destino = this.ruta.snapshot.queryParamMap.get('returnUrl') || '/curriculums';
-          const permitido = destino === '/curriculums' || destino.startsWith('/curriculums/') ||
-            destino === '/perfil' || destino === '/fotos' ||
-            destino === '/usuarios' || destino.startsWith('/usuarios/');
-          if (!permitido) destino = '/curriculums';
+          let destino = this.ruta.snapshot.queryParamMap.get('returnUrl') || '/perfil';
+          const permitido =
+            destino === '/curriculums' ||
+            destino.startsWith('/curriculums/') ||
+            destino === '/perfil' ||
+            destino === '/usuarios' ||
+            destino.startsWith('/usuarios/');
+          if (!permitido) destino = '/perfil';
           this.navegador.navigateByUrl(destino);
         }
       },
-      error: error => {
+      error: (error) => {
         this.pendiente.set(false);
         this.error.set(this.acceso.mensaje(error));
         // No borrar los datos al fallar para que el usuario pueda corregirlos.
-      }
+      },
     });
   }
-
 }
