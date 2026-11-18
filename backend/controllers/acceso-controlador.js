@@ -1,19 +1,11 @@
-const usuarios = require("../services/usuario-servicio");
-const sesion = require("../middlewares/sesion");
+const usuarios = require('../services/usuario-servicio');
+const sesion = require('../middlewares/sesion');
 
 exports.ingreso = async (req, res, next) => {
   try {
     const usuario = await usuarios.ingresar(req.body);
-    // Cambiar el identificador evita reutilizar una sesión anterior al ingreso.
-    req.session.regenerate((error) => {
-      if (error) return next(error);
-      req.session.usuarioId = usuario.id;
-      req.session.versionSesion = usuario.versionSesion;
-      req.session.save((error) => {
-        if (error) return next(error);
-        res.json(usuarios.datosPublicos(usuario));
-      });
-    });
+    req.session.usuarioId = usuario.id;
+    res.json(usuarios.datosPublicos(usuario));
   } catch (error) {
     next(error);
   }
@@ -21,7 +13,7 @@ exports.ingreso = async (req, res, next) => {
 
 exports.sesion = async (req, res, next) => {
   try {
-    const usuario = await sesion.leer(req);
+    const usuario = await sesion.obtenerUsuario(req);
     res.json(usuario ? usuarios.datosPublicos(usuario) : null);
   } catch (error) {
     next(error);
@@ -32,13 +24,15 @@ exports.registro = async (req, res, next) => {
   try {
     await usuarios.registrar(req.body);
     res.status(201).json({ mensaje: 'Cuenta creada. Ya podés ingresar.' });
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.salida = (req, res, next) => {
   req.session.destroy((error) => {
     if (error) return next(error);
-    sesion.limpiarCookie(res);
+    res.clearCookie('armatucv.sesion');
     res.json({ mensaje: 'Sesión cerrada.' });
   });
 };
